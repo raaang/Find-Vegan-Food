@@ -7,8 +7,9 @@
  */
 
  import React from 'react';
- import type {Node} from 'react';
- import {
+//  import type {Node} from 'react';
+import { Node } from 'react' 
+import {
    SafeAreaView,
    ScrollView,
    StatusBar,

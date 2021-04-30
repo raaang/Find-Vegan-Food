@@ -1,28 +1,43 @@
-import React, { Component, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { 
   StyleSheet, 
   View,
   Text, 
   SafeAreaView,
   TouchableOpacity, 
-  Platform
+  Platform,
+  PermissionsAndroid,
+  Button
 } from 'react-native';
 import { RNCamera } from 'react-native-camera';
 
-export default function btn() {
+export default function BarcodeScreen({ navigation }) {
   const cameraRef = useRef();
 
   const [qrvalue, setQrvalue] = useState('');
   const [openScanner, setOpenScanner] = useState(false);
 
-  const onBarcodeScan = (qrvalue) => {
+  // const onBarcodeScan = (qrvalue) => {
+  //   // Called after te successful scanning of QRCode/Barcode
+  //   setQrvalue(qrvalue);
+
+  //   //여기서 api로 연결해야하나?
+  //   setOpenScanner(false);
+  //   alert(qrvalue);
+  // };
+  
+  const onBarCodeRead = (qrvalue) => {
     // Called after te successful scanning of QRCode/Barcode
     setQrvalue(qrvalue);
 
+    alert(
+      'Barcode type : ' + qrvalue.type + '\n' +
+      'Barcode value : ' + qrvalue.data
+    );
+
     //여기서 api로 연결해야하나?
     setOpenScanner(false);
-    alert(qrvalue);
-  };
+  }
 
   const onOpenScanner = () => {
     // To Start Scanning
@@ -56,22 +71,47 @@ export default function btn() {
     }
   };
 
+  const takePicture = async () => {
+    if (cameraRef) {
+      const options = { quality: 0.5, base64: true };
+      const data = await cameraRef.takePictureAsync(options);
+      console.log(data.uri);
+    }
+  };
+
+  const pressHandler = () => {
+    // navigation.navigate('Two');
+    navigation.push('');
+  }
+
   return (
     <SafeAreaView style={styles.container}>
       {openScanner ? (
-        <View style={{ flex: 1 }}>
+        <View style={styles.barcodeArea}>
           <RNCamera
-            style={styles.camera}
             ref={cameraRef}
-            // type={RNCamera.Constants.Type.back}
-            captureAudio={false}
-          // androidCameraPermissionOptions={{
-          //   title: 'Permission to use camera',
-          //   message: 'We need your permission to use your camera',
-          //   buttonPositive: 'Ok',
-          //   buttonNegative: 'Cancel',
-          // }}
-          ></RNCamera>
+            style={styles.barcode}
+            type={RNCamera.Constants.Type.back}
+            flashMode={RNCamera.Constants.FlashMode.auto}
+            onBarCodeRead={
+              (event) => onBarCodeRead(event)
+            }
+            // onGoogleVisionBarcodesDetected={
+            //   (event) => onBarcodeScan(event)
+            // }
+            androidCameraPermissionOptions={{
+              title: 'Permission to use camera',
+              message: 'We need your permission to use your camera',
+              buttonPositive: 'Ok',
+              buttonNegative: 'Cancel'
+            }}
+          />
+          <TouchableOpacity
+            style={styles.saveBtnArea}
+            onPress={takePicture}
+          >
+            <Text style={styles.saveBtnText}>Save Barcode Picture</Text>
+          </TouchableOpacity>
         </View>
       ) : (
         <View style={styles.container}>
@@ -79,8 +119,13 @@ export default function btn() {
             style={styles.btnArea}
             onPress={onOpenScanner}
           >
-            <Text style={styles.btnText}>바코드 스캔하기</Text>
+            <Text style={styles.btnText}>Barcode Scan</Text>
           </TouchableOpacity>
+          <Button 
+            style={styles.btnArea} 
+            title='Next Page'
+            onPress={pressHandler} 
+          />
         </View>
       )}
     </SafeAreaView>
@@ -90,13 +135,16 @@ export default function btn() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center', // height
-    alignItems: 'center'      // width
+    alignItems: 'center',     // width
+    justifyContent: 'center'  // height
   },
   btnArea: {
-    padding: 10,
     alignItems: 'center',
     justifyContent: 'center',
+    width: '60%',
+    padding: 10,
+    marginBottom: '5%',
+    borderRadius: 5,
     backgroundColor: 'lightblue'
   },
   btnText: {
@@ -104,10 +152,32 @@ const styles = StyleSheet.create({
     fontSize: 15,
     fontFamily: 'NanumSquareR'
   },
-  barcode: {
+
+  barcodeArea: {
     alignItems: 'center',
+    justifyContent: 'center'
+  },
+  barcode: {
+    // alignItems: 'center',
     justifyContent: 'center',
+    alignSelf: 'center',
     width: 200,
     height: 200
+  },
+  saveBtnArea: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    // alignSelf: 'center'
+    width: '60%',
+    padding: 10,
+    marginBottom: '5%',
+    borderRadius: 5,
+    backgroundColor: 'lightblue'
+  },
+  saveBtnText: {
+    // alignSelf: 'center',
+    color: 'white',
+    fontSize: 15,
+    fontFamily: 'NanumSquareR'
   }
 });

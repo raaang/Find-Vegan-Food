@@ -5,6 +5,7 @@ import HomeScreen from './HomeScreen';
 import LoginScreen from './LoginScreen';
 import BarcodeScreen from './BarcodeScreen';
 import ScanBarcodeScreen from './ScanBarcodeScreen';
+import AfterScanScreen from './AfterScanScreen';
 
 const screens = {
   Home: {
@@ -18,6 +19,9 @@ const screens = {
   },
   ScanBarcode: {
     screen: ScanBarcodeScreen
+  },
+  AfterScan: {
+    screen: AfterScanScreen
   }
 }
 

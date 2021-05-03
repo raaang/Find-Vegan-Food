@@ -1,0 +1,33 @@
+{
+  "_bodyBlob": {
+    "_data": {
+      "__collector": [Object], 
+      "blobId": "32b673ca-b43e-4e83-a04d-de8284e81172", 
+      "offset": 0, "size": 2976
+    }
+  }, 
+  "_bodyInit": {
+    "_data": {
+      "__collector": [Object], 
+      "blobId": "32b673ca-b43e-4e83-a04d-de8284e81172", 
+      "offset": 0, "size": 2976
+    }
+  }, 
+  "bodyUsed": false, 
+  "headers": {
+    "map": {
+      "access-control-allow-origin": "*", 
+      "cache-control": "no-cache", 
+      "connection": "keep-alive", 
+      "content-type": "application/json; charset=utf-8", 
+      "date": "Mon, 03 May 2021 11:54:07 GMT", 
+      "expires": "Thu, 01 Jan 1970 00:00:00 GMT", 
+      "transfer-encoding": "chunked"
+    }
+  }, 
+  "ok": true, 
+  "status": 200, 
+  "statusText": "", 
+  "type": "default", 
+  "url": "http://openapi.foodsafetykorea.go.kr/api/85e2be4bc56846348d50/C005/json/1/8"
+}

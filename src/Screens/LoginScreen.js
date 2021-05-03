@@ -30,11 +30,12 @@ export default function LoginScreen({ navigation }) {
           placeholder='Password'
         />
       </View>
+      
       <TouchableOpacity 
         style={styles.btnArea}
         onPress={pressHandler}
       >
-        <Text style={styles.text}>Sign Up</Text>
+        <Text style={styles.text}>Sign In</Text>
       </TouchableOpacity>
     </View>
   )

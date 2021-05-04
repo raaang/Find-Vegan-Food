@@ -1,26 +1,110 @@
 {
-  "_bodyBlob": {
-    "_data": {
+  "RESULT": 
+  {
+    "CODE": "INFO-000", 
+    "MSG": "정상처리되었습니다."
+  }, 
+  "row": 
+  [
+    {
+      "BAR_CD": "8801037019667", 
+      "BSSH_NM": "동서식품(주)", 
+      "CLSBIZ_DT": "", 
+      "END_DT": "", 
+      "INDUTY_NM": "식품제조가공업", 
+      "POG_DAYCNT": "알루미늄증착포장재질:12개월,알루미늄호일포장재질:18개월", 
+      "PRDLST_DCNM": "커피", 
+      "PRDLST_NM": "맥심모카골드마일드커피믹스", 
+      "PRDLST_REPORT_NO": "1975020200459", 
+      "PRMS_DT": "19930401", 
+      "SITE_ADDR": "인천광역시 부평구 새벌로 55(청천동, [부평대로313번길46 B동1층,C동][안남 로418번길41 A동1층일부])"
+    }, 
+    {
+      "BAR_CD": "8801037019667", 
+      "BSSH_NM": "동서식품(주)", 
+      "CLSBIZ_DT": "", 
+      "END_DT": "", 
+      "INDUTY_NM": "식품제조가공업", 
+      "POG_DAYCNT": "알루미늄증착포장재질:12개월,알루미늄호일포장재질:18개월", 
+      "PRDLST_DCNM": "커피", 
+      "PRDLST_NM": "맥심모카골드마일드커피믹스", 
+      "PRDLST_REPORT_NO": "1975020200477", 
+      "PRMS_DT": "20031113", 
+      "SITE_ADDR": "인천광역시 부평구 새벌로 55(청천동, [부평대로313번길46 B동1층,C동][안남로418번길41 A동1층일부])"
+    }, 
+    {
+      "BAR_CD": "8801037019667", 
+      "BSSH_NM": "동서식품(주)", 
+      "CLSBIZ_DT": "", 
+      "END_DT": "", 
+      "INDUTY_NM": "식품제조가공업", 
+      "POG_DAYCNT": "알루미튬증 착포장재질:12개월,알루미늄호일포장재질:18개월", 
+      "PRDLST_DCNM": "커피", 
+      "PRDLST_NM": "Maxim 모카골드 마일드 커피믹스", 
+      "PRDLST_REPORT_NO": "1975020200498", 
+      "PRMS_DT": "20060203", 
+      "SITE_ADDR": "인천광역시 부평구 새벌로 55(청천동, [부평대로313번길46 B동1층,C동][안남로418번길41 A동1층일부])"
+    }
+  ], 
+  "total_count": "3"
+}
+
+{
+  "C002":
+  {
+    "RESULT":
+    {
+      "MSG":"정상처리되었습니다.",
+      "CODE":"INFO-000"
+    },
+    "total_count":"1",
+    "row":
+    [
+      {
+        "PRDLST_NM":"Maxim 모카골드 마일드 커피믹스",
+        "PRDLST_DCNM":"커피",
+        "BSSH_NM":"동서식품(주)",
+        "PRMS_DT":"20060203",
+        "RAWMTRL_NM":"인스턴트커피,설탕,식물성크림",
+        "LCNS_NO":"19750202004",
+        "PRDLST_REPORT_NO":"1975020200498"
+      }
+    ]
+  }
+}
+
+{
+  "_bodyBlob": 
+  {
+    "_data": 
+    {
       "__collector": [Object], 
-      "blobId": "32b673ca-b43e-4e83-a04d-de8284e81172", 
-      "offset": 0, "size": 2976
+      "blobId": "9a4fbc2c-0f45-42eb-a1b3-3144460fc197", 
+      "offset": 0, 
+      "size": 558
     }
   }, 
-  "_bodyInit": {
-    "_data": {
+  "_bodyInit": 
+  {
+    "_data": 
+    {
       "__collector": [Object], 
-      "blobId": "32b673ca-b43e-4e83-a04d-de8284e81172", 
-      "offset": 0, "size": 2976
+      "blobId": "9a4fbc2c-0f45-42eb-a1b3-3144460fc197", 
+      "offset": 0, 
+      "size": 558
     }
   }, 
   "bodyUsed": false, 
-  "headers": {
-    "map": {
+  "headers": 
+  {
+    "map": 
+    {
       "access-control-allow-origin": "*", 
       "cache-control": "no-cache", 
       "connection": "keep-alive", 
-      "content-type": "application/json; charset=utf-8", 
-      "date": "Mon, 03 May 2021 11:54:07 GMT", 
+      "content-type": "text/xml; charset=utf-8", 
+      "date": "Tue, 
+      04 May 2021 15:24:40 GMT", 
       "expires": "Thu, 01 Jan 1970 00:00:00 GMT", 
       "transfer-encoding": "chunked"
     }
@@ -29,5 +113,5 @@
   "status": 200, 
   "statusText": "", 
   "type": "default", 
-  "url": "http://openapi.foodsafetykorea.go.kr/api/85e2be4bc56846348d50/C005/json/1/8"
+  "url": "http://openapi.foodsafetykorea.go.kr/api/85e2be4bc56846348d50/C002/xml/1/5/PRDLST_REPORT_NO=1975020200498"
 }

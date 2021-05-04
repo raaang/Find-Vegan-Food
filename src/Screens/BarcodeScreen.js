@@ -30,7 +30,7 @@ export default function BarcodeScreen({ navigation }) {
     //여기서 api로 연결해야하나?
     setOpenScanner(false);
 
-    navigation.navigate('AfterScan', {barcodeValue});
+    navigation.navigate('Product', {barcodeValue});
   }
 
   const onOpenScanner = () => {

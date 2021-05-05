@@ -85,9 +85,6 @@ export default function BarcodeScreen({ navigation }) {
             onBarCodeRead={
               (event) => onBarcodeScan(event)
             }
-            // onGoogleVisionBarcodesDetected={
-            //   (event) => onBarcodeScan(event)
-            // }
             androidCameraPermissionOptions={{
               title: 'Permission to use camera',
               message: 'We need your permission to use your camera',
@@ -95,12 +92,12 @@ export default function BarcodeScreen({ navigation }) {
               buttonNegative: 'Cancel'
             }}
           />
-          <TouchableOpacity
+          {/* <TouchableOpacity
             style={styles.saveBtnArea}
             onPress={takePicture}
           >
             <Text style={styles.saveBtnText}>Save Barcode Picture</Text>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
         </View>
       ) : (
         <View style={styles.container}>

@@ -6,7 +6,7 @@ import {
   View 
 } from 'react-native';
 
-export default function LoginScreen({ navigation }) {
+export default function StartScreen({ navigation }) {
   const pressLoginHandler = () => {
     navigation.push('Login');
   }

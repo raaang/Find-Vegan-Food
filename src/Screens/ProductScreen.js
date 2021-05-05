@@ -39,10 +39,10 @@ export default function ProductScreen({ navigation }) {
     }
   }
 
-  const getMaterialInfo = async (foodNum) => {
+  const getMaterialInfo = async (foodNumber) => {
     const response = await fetch(
       'http://openapi.foodsafetykorea.go.kr/api/' + apiKey +
-      '/C002/json/1/5/PRDLST_REPORT_NO=' + foodNum
+      '/C002/json/1/5/PRDLST_REPORT_NO=' + foodNumber
     );
 
     if (response.status == 200) {
@@ -80,6 +80,8 @@ export default function ProductScreen({ navigation }) {
   }
 
   const pressHandler = () => {
+    console.log('pressHandler');
+    console.log(foodNum, foodName, materialList);
     navigation.navigate('Material', {
       foodNum: foodNum,
       foodName: foodName, 
@@ -89,17 +91,17 @@ export default function ProductScreen({ navigation }) {
 
   return (
     <View style={styles.container}>
+      <Text>{barcodeValue.type}</Text>
+      <Text>{barcodeValue.data}</Text>
+      <Text>{foodNum}</Text>
+      <Text>{foodName}</Text>
+
       <TouchableOpacity
         style={styles.btnArea}
         onPress={getMaterialList}
       >
         <Text style={styles.btnText}>Show Product Name</Text>
       </TouchableOpacity>
-
-      <Text>{barcodeValue.type}</Text>
-      <Text>{barcodeValue.data}</Text>
-      <Text>{foodNum}</Text>
-      <Text>{foodName}</Text>
 
       <TouchableOpacity
         style={styles.btnArea}

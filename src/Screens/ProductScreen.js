@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Button, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Animated, Button, Easing, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 export default function ProductScreen({ navigation }) {
   const barcodeValue = navigation.getParam('barcodeValue');
@@ -7,10 +7,12 @@ export default function ProductScreen({ navigation }) {
 
   const [foodNum, setFoodNum] = useState('');
   const [foodName, setFoodName] = useState('');
-  const [materialList, setMaterialList] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  var is_finish = false;
 
   console.log('==============================');
-  console.log('Barcode: ', barcodeValue.data);
+  // console.log('Barcode: ', barcodeValue.data);
 
   const getFoodInfo = async () => {
     const response = await fetch(
@@ -49,7 +51,7 @@ export default function ProductScreen({ navigation }) {
       const responseJson = await response.json();
       try {
         const material = await responseJson.C002.row;
-        if (material != null) {
+        if (material != null || material != '') {
           console.log('------------------------------');
           console.log('Material Info: ', material[material.length - 1]);
 
@@ -66,50 +68,89 @@ export default function ProductScreen({ navigation }) {
     }
   }
 
-  const getMaterialList = async () => {
+  const getFoodName = async () => {
     const foodInfo = await getFoodInfo();
     setFoodNum(foodInfo.PRDLST_REPORT_NO);
     setFoodName(foodInfo.PRDLST_NM);
-
-    const foodMaterial = await getMaterialInfo(foodNum);
-    const materialName = foodMaterial.RAWMTRL_NM;
-    console.log(materialName);
-
-    setMaterialList(materialName.split(','));
-    console.log(materialList);
   }
 
-  const pressHandler = () => {
-    console.log('pressHandler');
-    console.log(foodNum, foodName, materialList);
+  const getMaterialList = async () => {
+    setLoading(true);
+
+    const foodMaterial = await getMaterialInfo(foodNum);
+    const materialName = await foodMaterial.RAWMTRL_NM;
+    const materialList = materialName.split(',');
+
+    console.log(foodNum);
+    console.log(foodName);
+    console.log(materialList);
+
+    setLoading(false);
+
     navigation.navigate('Material', {
       foodNum: foodNum,
       foodName: foodName, 
       materialList: materialList
     });
-  };
+  }
+
+  const animatedRotation = new Animated.Value(0);
+  
+  const rotation = animatedRotation.interpolate({
+    inputRange: [0, 1],
+    outputRange: ['0deg', '360deg']
+  })
+  
+  if (loading) {
+    Animated.loop(
+      Animated.timing(animatedRotation, {
+        toValue: 1,
+        easing: Easing.linear,
+        useNativeDriver: true
+      })
+    ).start()
+  }
+  // const animate = () => {
+  // }
 
   return (
-    <View style={styles.container}>
-      <Text>{barcodeValue.type}</Text>
-      <Text>{barcodeValue.data}</Text>
-      <Text>{foodNum}</Text>
-      <Text>{foodName}</Text>
+    <View style={{ flex: 1 }}>
+      {loading ? (
+        <View style={styles.container}>
+          <Animated.Image
+            source={require('../Images/spinner_blue.png')}
+            style={{
+              alignItems: 'center',
+              justifyContent: 'center',
+              width: 50,
+              height: 50,
+              transform: [{ rotate: rotation }]
+            }}
+          />
+        </View>
+      ) : (
+        <View style={styles.container}>
+          <Text style={styles.titleText}>Barcode: {barcodeValue.data}</Text>
+          <Text style={styles.titleText}>{foodName}</Text>
+          <Text></Text>
 
-      <TouchableOpacity
-        style={styles.btnArea}
-        onPress={getMaterialList}
-      >
-        <Text style={styles.btnText}>Show Product Name</Text>
-      </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.btnArea}
+            onPress={getFoodName}
+          >
+            <Text style={styles.btnText}>Show Product Name</Text>
+          </TouchableOpacity>
 
-      <TouchableOpacity
-        style={styles.btnArea}
-        onPress={pressHandler}
-      >
-        <Text style={styles.btnText}>Show Material</Text>
-      </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.btnArea}
+            onPress={getMaterialList}
+          >
+            <Text style={styles.btnText}>Show Material</Text>
+          </TouchableOpacity>
+        </View>
+      )}
     </View>
+
   )
 }
 
@@ -132,6 +173,23 @@ const styles = StyleSheet.create({
   btnText: {
     color: 'white',
     fontSize: 15,
+    fontFamily: 'NanumSquareR'
+  },
+  
+  titleArea: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '100%',
+    height: 50,
+    marginVertical: 10,
+    padding: 10,
+    borderWidth: 1,
+    borderColor: 'gray'
+  },
+  titleText: {
+    color: 'dodgerblue',
+    fontSize: 23,
+    fontWeight: 'bold',
     fontFamily: 'NanumSquareR'
   },
 })

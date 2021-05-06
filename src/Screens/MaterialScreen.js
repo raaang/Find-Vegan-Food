@@ -13,20 +13,22 @@ export default function MaterialScreen({ navigation }) {
   console.log(materialList);
 
   const showMaterialList = materialList.map(
-    (index) => (
-      <View style={styles.materialArea}>
-        <Text style={styles.materialText}>{index}</Text>
-      </View>
-    )
+    (mat, idx) => {
+      return (
+        <View style={styles.materialArea} key={idx}>
+          <Text style={styles.materialText}>{mat}</Text>
+        </View>
+      )
+    }
   )
 
   return (
     <View style={styles.container}>
       <View style={styles.titleArea}>
         <Text style={styles.titleText}>{foodName}</Text>
-      </View>
-      <View style={styles.foodNumArea}>
-        <Text style={styles.foodNumText}>Product No. {foodNum}</Text>
+        <View style={styles.foodNumArea}>
+          <Text style={styles.foodNumText}>Product No. {foodNum}</Text>
+        </View>
       </View>
 
       <ScrollView style={styles.listArea}>
@@ -47,15 +49,16 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     width: '100%',
-    height: 50,
+    height: '10%',
     marginVertical: 10,
     padding: 10,
     borderWidth: 1,
-    borderColor: 'gray'
+    borderColor: 'gray',
+    backgroundColor: 'aliceblue'
   },
   titleText: {
     color: 'dodgerblue',
-    fontSize: 23,
+    fontSize: 25,
     fontWeight: 'bold',
     fontFamily: 'NanumSquareR'
   },
@@ -64,9 +67,10 @@ const styles = StyleSheet.create({
     alignItems: 'flex-end',
     justifyContent: 'center',
     width: '100%',
-    paddingHorizontal: 20,
-    borderWidth: 1,
-    borderColor: 'gray'
+    marginTop: 5,
+    paddingHorizontal: 10,
+    // borderWidth: 1,
+    // borderColor: 'gray'
   },
   foodNumText: {
     color: 'black',

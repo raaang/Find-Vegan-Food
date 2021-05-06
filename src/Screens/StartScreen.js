@@ -12,7 +12,7 @@ export default function StartScreen({ navigation }) {
   }
 
   const pressSignupHandler = () => {
-    alert('Press Sign Up');
+    navigation.push('SignUp');
   }
 
   return (

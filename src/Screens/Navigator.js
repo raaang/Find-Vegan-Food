@@ -7,6 +7,7 @@ import BarcodeScreen from './BarcodeScreen';
 import ScanBarcodeScreen from './ScanBarcodeScreen';
 import ProductScreen from './ProductScreen';
 import MaterialScreen from './MaterialScreen';
+import SignUpScreen from './SignUpScreen';
 
 const screens = {
   Start: {
@@ -14,6 +15,9 @@ const screens = {
   },
   Login: {
     screen: LoginScreen
+  },
+  SignUp: {
+    screen: SignUpScreen
   },
   Barcode: {
     screen: BarcodeScreen

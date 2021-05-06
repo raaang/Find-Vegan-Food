@@ -9,10 +9,11 @@ import {
   View 
 } from 'react-native';
 
-export default function LoginScreen({ navigation }) {
+export default function SignUpScreen({ navigation }) {
 
   const pressHandler = () => {
-    navigation.push('Barcode');
+    alert('Finish Sign Up');
+    navigation.push('Start');
   }
 
   return (
@@ -29,12 +30,18 @@ export default function LoginScreen({ navigation }) {
           placeholder='Password'
         />
       </View>
+      <View style={styles.inputView}>
+        <TextInput 
+          style={styles.inputText}
+          placeholder='Email'
+        />
+      </View>
       
       <TouchableOpacity 
         style={styles.btnArea}
         onPress={pressHandler}
       >
-        <Text style={styles.btnText}>Sign In</Text>
+        <Text style={styles.text}>Sign Up</Text>
       </TouchableOpacity>
     </View>
   )
@@ -55,7 +62,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     backgroundColor: 'lightblue'
   },
-  btnText: {
+  text: {
     color: 'white',
     fontSize: 15,
     fontFamily: 'NanumSquareR'

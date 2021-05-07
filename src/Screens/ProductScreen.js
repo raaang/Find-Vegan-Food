@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Animated, Button, Easing, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Animated, Button, Easing, FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 export default function ProductScreen({ navigation }) {
   const barcodeValue = navigation.getParam('barcodeValue');
@@ -9,10 +9,7 @@ export default function ProductScreen({ navigation }) {
   const [foodName, setFoodName] = useState('');
   const [loading, setLoading] = useState(false);
 
-  var is_finish = false;
-
   console.log('==============================');
-  // console.log('Barcode: ', barcodeValue.data);
 
   const getFoodInfo = async () => {
     const response = await fetch(
@@ -75,7 +72,7 @@ export default function ProductScreen({ navigation }) {
   }
 
   const getMaterialList = async () => {
-    setLoading(true);
+    setLoading(true);           // start loading animation
 
     const foodMaterial = await getMaterialInfo(foodNum);
     const materialName = await foodMaterial.RAWMTRL_NM;
@@ -85,7 +82,7 @@ export default function ProductScreen({ navigation }) {
     console.log(foodName);
     console.log(materialList);
 
-    setLoading(false);
+    setLoading(false);          // finish loading animation
 
     navigation.navigate('Material', {
       foodNum: foodNum,
@@ -94,6 +91,7 @@ export default function ProductScreen({ navigation }) {
     });
   }
 
+  // loading animation
   const animatedRotation = new Animated.Value(0);
   
   const rotation = animatedRotation.interpolate({
@@ -110,8 +108,17 @@ export default function ProductScreen({ navigation }) {
       })
     ).start()
   }
-  // const animate = () => {
-  // }
+
+  // get DB by server
+  const [data, setData] = useState('');
+
+  const getData = async () => {
+    const response = await fetch('http://192.168.25.6:4444/member');
+    const responseJson = await response.json();
+    setData(responseJson);
+  }
+
+  getData();
 
   return (
     <View style={{ flex: 1 }}>
@@ -133,6 +140,18 @@ export default function ProductScreen({ navigation }) {
           <Text style={styles.titleText}>Barcode: {barcodeValue.data}</Text>
           <Text style={styles.titleText}>{foodName}</Text>
           <Text></Text>
+
+          <View style={{ flex: 1, borderColor: 'gray', borderWidth: 1 }}>
+            <FlatList
+              data={data}
+              keyExtractor={(item, index) => index.toString()}
+              renderItem={({ item }) =>
+                <View>
+                  <Text>{item.user_name}</Text>
+                </View>
+              }
+            />
+          </View>
 
           <TouchableOpacity
             style={styles.btnArea}
@@ -168,11 +187,12 @@ const styles = StyleSheet.create({
     padding: 10,
     marginBottom: '5%',
     borderRadius: 5,
-    backgroundColor: 'lightblue'
+    backgroundColor: 'cornflowerblue'
   },
   btnText: {
     color: 'white',
     fontSize: 15,
+    fontWeight: 'bold',
     fontFamily: 'NanumSquareR'
   },
   

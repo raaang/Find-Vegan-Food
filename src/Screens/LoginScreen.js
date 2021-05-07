@@ -46,6 +46,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center'
   },
+
   btnArea: {
     alignItems: 'center',
     justifyContent: 'center',
@@ -53,28 +54,33 @@ const styles = StyleSheet.create({
     padding: 10,
     marginBottom: '5%',
     borderRadius: 5,
-    backgroundColor: 'lightblue'
+    backgroundColor: 'cornflowerblue'
   },
   btnText: {
     color: 'white',
     fontSize: 15,
+    fontWeight: 'bold',
     fontFamily: 'NanumSquareR'
   },
+
   inputView:{
     justifyContent: 'center',
     width: '60%',
-    // backgroundColor:"#6782C0",
-    backgroundColor: '#6586D0',
-    // backgroundColor: '#7A99DE',
-    marginBottom: '5%',
-    borderRadius: 25,
     height: 50,
+    marginBottom: '5%',
     padding: 20,
+    borderRadius: 25,
+    backgroundColor: 'lightblue',
+    // backgroundColor:"#6782C0",
+    // backgroundColor: '#6586D0',
+    // backgroundColor: '#7A99DE',
   },
   inputText:{
-    color: 'white',
+    paddingHorizontal: 20,
+    color: 'black',
     height: 50,
     fontSize: 15,
+    fontWeight: 'bold',
     fontFamily: 'NanumSquareR',
   }
 })

@@ -74,30 +74,32 @@ export default function BarcodeScreen({ navigation }) {
   }
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={{ flex: 1 }}>
       {openScanner ? (
-        <View style={styles.barcodeArea}>
-          <RNCamera
-            ref={cameraRef}
-            style={styles.barcode}
-            type={RNCamera.Constants.Type.back}
-            flashMode={RNCamera.Constants.FlashMode.auto}
-            onBarCodeRead={
-              (event) => onBarcodeScan(event)
-            }
-            androidCameraPermissionOptions={{
-              title: 'Permission to use camera',
-              message: 'We need your permission to use your camera',
-              buttonPositive: 'Ok',
-              buttonNegative: 'Cancel'
-            }}
-          />
-          {/* <TouchableOpacity
+        <View style={styles.container}>
+          <View style={styles.barcodeArea}>
+            <RNCamera
+              ref={cameraRef}
+              style={styles.barcode}
+              type={RNCamera.Constants.Type.back}
+              flashMode={RNCamera.Constants.FlashMode.auto}
+              onBarCodeRead={
+                (event) => onBarcodeScan(event)
+              }
+              androidCameraPermissionOptions={{
+                title: 'Permission to use camera',
+                message: 'We need your permission to use your camera',
+                buttonPositive: 'Ok',
+                buttonNegative: 'Cancel'
+              }}
+            />
+            {/* <TouchableOpacity
             style={styles.saveBtnArea}
             onPress={takePicture}
           >
             <Text style={styles.saveBtnText}>Save Barcode Picture</Text>
           </TouchableOpacity> */}
+          </View>
         </View>
       ) : (
         <View style={styles.container}>
@@ -109,7 +111,7 @@ export default function BarcodeScreen({ navigation }) {
           </TouchableOpacity>
         </View>
       )}
-    </SafeAreaView>
+    </View>
   )
 }
 
@@ -119,6 +121,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',     // width
     justifyContent: 'center'  // height
   },
+  
   btnArea: {
     alignItems: 'center',
     justifyContent: 'center',
@@ -126,25 +129,26 @@ const styles = StyleSheet.create({
     padding: 10,
     marginBottom: '5%',
     borderRadius: 5,
-    backgroundColor: 'lightblue'
+    backgroundColor: 'cornflowerblue'
   },
   btnText: {
     color: 'white',
     fontSize: 15,
+    fontWeight: 'bold',
     fontFamily: 'NanumSquareR'
   },
 
   barcodeArea: {
     alignItems: 'center',
-    justifyContent: 'center'
+    justifyContent: 'center',
+    borderWidth: 1,
+    borderColor: 'gray'
   },
   barcode: {
-    // alignItems: 'center',
-    justifyContent: 'center',
-    alignSelf: 'center',
     width: 200,
     height: 200
   },
+
   saveBtnArea: {
     alignItems: 'center',
     justifyContent: 'center',

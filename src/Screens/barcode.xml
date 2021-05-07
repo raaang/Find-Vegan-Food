@@ -115,3 +115,45 @@
   "type": "default", 
   "url": "http://openapi.foodsafetykorea.go.kr/api/85e2be4bc56846348d50/C002/xml/1/5/PRDLST_REPORT_NO=1975020200498"
 }
+
+
+{
+  "_bodyBlob": 
+  {
+    "_data": 
+    {
+      "__collector": [Object], 
+      "blobId": "dc044bb0-c3de-4972-a4bd-54382abbc65f", 
+      "offset": 0, 
+      "size": 591
+    }
+  }, 
+  "_bodyInit": 
+  {
+    "_data": 
+    {
+      "__collector": [Object], 
+      "blobId": "dc044bb0-c3de-4972-a4bd-54382abbc65f", 
+      "offset": 0, "size": 591
+    }
+  }, 
+  "bodyUsed": false, 
+  "headers": 
+  {
+    "map": 
+    {
+      "connection": "keep-alive", 
+      "content-length": "591", 
+      "content-type": "application/json; charset=utf-8", 
+      "date": "Thu, 06 May 2021 13:27:53 GMT", 
+      "etag": "W/\"24f-m+efwaX74wMEaM/UJpW/uIkkTF0\"", 
+      "keep-alive": "timeout=5", 
+      "x-powered-by": "Express"
+    }
+  }, 
+  "ok": true, 
+  "status": 200, 
+  "statusText": "", 
+  "type": "default", 
+  "url": "http://192.168.25.6:4444/member"
+}

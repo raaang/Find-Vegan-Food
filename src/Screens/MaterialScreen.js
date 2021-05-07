@@ -1,12 +1,13 @@
-import React from 'react';
-import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import React, { useState } from 'react';
+import { FlatList, ScrollView, StatusBar, StyleSheet, Text, useColorScheme, View } from 'react-native';
+import { Colors, Header } from 'react-native/Libraries/NewAppScreen';
 
 export default function MaterialScreen({ navigation }) {
   const foodNum = navigation.getParam('foodNum');
   const foodName = navigation.getParam('foodName');
   const materialList = navigation.getParam('materialList');
-  
-  console.log('==============================');
+
+  console.log('------------------------------');
   console.log('Material Screen');
   console.log(foodNum);
   console.log(foodName);
@@ -21,9 +22,21 @@ export default function MaterialScreen({ navigation }) {
       )
     }
   )
+  
+  const isDarkMode = useColorScheme() === 'dark';
+
+  const backgroundStyle = {
+    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
+  };
 
   return (
     <View style={styles.container}>
+    {/* <Header /> */}
+      <StatusBar barStyle={
+        isDarkMode ? 'light-content' : 'dark-content'
+        } 
+      />
+      
       <View style={styles.titleArea}>
         <Text style={styles.titleText}>{foodName}</Text>
         <View style={styles.foodNumArea}>

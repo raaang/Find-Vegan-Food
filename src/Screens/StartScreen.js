@@ -46,11 +46,12 @@ const styles = StyleSheet.create({
     padding: 10,
     marginBottom: '5%',
     borderRadius: 5,
-    backgroundColor: 'lightblue'
+    backgroundColor: 'cornflowerblue'
   },
   btnText: {
     color: 'white',
     fontSize: 15,
+    fontWeight: 'bold',
     fontFamily: 'NanumSquareR'
   }
 })

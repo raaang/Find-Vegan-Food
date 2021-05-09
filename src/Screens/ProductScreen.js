@@ -7,7 +7,9 @@ export default function ProductScreen({ navigation }) {
 
   const [foodNum, setFoodNum] = useState('');
   const [foodName, setFoodName] = useState('');
+
   const [loading, setLoading] = useState(false);
+  const [data, setData] = useState('');
 
   console.log('==============================');
 
@@ -69,6 +71,8 @@ export default function ProductScreen({ navigation }) {
     const foodInfo = await getFoodInfo();
     setFoodNum(foodInfo.PRDLST_REPORT_NO);
     setFoodName(foodInfo.PRDLST_NM);
+
+    getData();
   }
 
   const getMaterialList = async () => {
@@ -89,6 +93,9 @@ export default function ProductScreen({ navigation }) {
       foodName: foodName, 
       materialList: materialList
     });
+
+    postData();
+    getData();
   }
 
   // loading animation
@@ -109,16 +116,27 @@ export default function ProductScreen({ navigation }) {
     ).start()
   }
 
-  // get DB by server
-  const [data, setData] = useState('');
-
+  // select query by server
   const getData = async () => {
-    const response = await fetch('http://192.168.25.6:4444/member');
+    const response = await fetch('http://192.168.25.6:4444/product');
     const responseJson = await response.json();
     setData(responseJson);
   }
 
-  getData();
+  // insert query by server
+  const postData = async () => {
+    await fetch('http://192.168.25.6:4444/product/insert', {
+      method: 'post',
+      headers: {
+        'content-type' : 'application/json'
+      },
+      body: JSON.stringify({
+        barcode: barcodeValue.data, 
+        foodNum: foodNum, 
+        foodName: foodName
+      })
+    }).then((res) => res.json());
+  }
 
   return (
     <View style={{ flex: 1 }}>
@@ -141,7 +159,7 @@ export default function ProductScreen({ navigation }) {
           <Text style={styles.titleText}>{foodName}</Text>
           <Text></Text>
 
-          <View style={{ flex: 1, borderColor: 'gray', borderWidth: 1 }}>
+          {/* <View style={{ flex: 1, borderColor: 'gray', borderWidth: 1 }}>
             <FlatList
               data={data}
               keyExtractor={(item, index) => index.toString()}
@@ -151,7 +169,7 @@ export default function ProductScreen({ navigation }) {
                 </View>
               }
             />
-          </View>
+          </View> */}
 
           <TouchableOpacity
             style={styles.btnArea}

@@ -8,6 +8,7 @@ import ScanBarcodeScreen from './ScanBarcodeScreen';
 import ProductScreen from './ProductScreen';
 import MaterialScreen from './MaterialScreen';
 import SignUpScreen from './SignUpScreen';
+import SearchProductScreen from './SearchProductScreen';
 
 const screens = {
   Start: {
@@ -30,6 +31,9 @@ const screens = {
   },
   Material: {
     screen: MaterialScreen
+  },
+  Search: {
+    screen: SearchProductScreen
   }
 }
 

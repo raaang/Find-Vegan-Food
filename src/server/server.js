@@ -50,6 +50,20 @@ app.get('/product', function(req, res) {
   })
 })
 
+app.post('/product/insert', function(req, res) {
+  const data = req.body;
+  // console.log(data);
+  connection.query('insert into product values(?,?,?)', [data.barcode, data.foodNum, data.foodName], 
+  function(err, rows, fields) {
+    if (err)
+      console.log(err);
+    else {
+      console.log(rows);
+      res.send(rows);
+    }
+  })
+})
+
 app.get('/save_product', function(req, res) {
   connection.query('select * from product', function(err, rows) {
     if (err)

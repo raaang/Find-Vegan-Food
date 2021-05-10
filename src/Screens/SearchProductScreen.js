@@ -6,5 +6,5 @@ export default function SearchProductScreen() {
     <View>
       <Text>Search Screen</Text>
     </View>
-  );
-};
+  )
+}

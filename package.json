@@ -27,13 +27,13 @@
     "react-navigation-tabs": "^2.11.1"
   },
   "devDependencies": {
-    "@babel/core": "^7.13.16",
-    "@babel/runtime": "^7.13.17",
+    "@babel/core": "^7.14.0",
+    "@babel/runtime": "^7.14.0",
     "@react-native-community/eslint-config": "^2.0.0",
-    "@typescript-eslint/eslint-plugin": "^4.22.0",
-    "@typescript-eslint/parser": "^4.22.0",
+    "@typescript-eslint/eslint-plugin": "^4.22.1",
+    "@typescript-eslint/parser": "^4.22.1",
     "babel-jest": "^26.6.3",
-    "eslint": "^7.24.0",
+    "eslint": "^7.26.0",
     "eslint-plugin-react": "^7.23.2",
     "jest": "^26.6.3",
     "metro-react-native-babel-preset": "^0.66.0",

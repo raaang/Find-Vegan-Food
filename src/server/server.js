@@ -2,6 +2,7 @@ const express = require('express')
 const app = express()
 const mysql = require("mysql");
 const bodyParser = require('body-parser');
+const { raw } = require('body-parser');
 const port = 4444     // react default=3000
 
 app.use(bodyParser.json({ type: 'application/json' }));
@@ -54,7 +55,7 @@ app.post('/product/insert', function (req, res) {
   const data = req.body;
   // console.log(data);
   connection.query('insert into product values(?,?,?)', [data.barcode, data.foodNum, data.foodName],
-    function (err, rows, fields) {
+    function (err, rows) {
       if (err)
         console.log(err);
       else {
@@ -90,6 +91,9 @@ app.get('/check_vegan', function (req, res) {
   // console.log('req: '+req);
   // console.log(data);
   // const sql = 'select * from check_vegan where rawmat_name="req.body"';
+  console.log('check_vegan');
+  // console.log(res);
+
   connection.query('select * from check_vegan', function (err, rows) {
     if (err)
       console.log(err);
@@ -100,24 +104,37 @@ app.get('/check_vegan', function (req, res) {
   })
 })
 
-var rawmatList = [];
+let rawList = [];
 
 app.post('/check_vegan/find', function (req, res) {
-  console.log('print vegan find');
-  console.log(req.body);
-  const rawList = req.body.rawmatList;
+  // let rawList = [];
+  console.log('check_vegan/find');
+  // console.log(req.body.rawmatList);
+  const rawmatList = req.body.rawmatList;
 
   var i;
-  for (i = 0; i < rawList.length; i++) {
-    connection.query('select * from check_vegan where rawmat_name=?', rawList[i], function (err, rows) {
+  for (i = 0; i < rawmatList.length; i++) {
+    connection.query('select * from check_vegan where rawmat_name=?', rawmatList[i], 
+    function (err, rows) {
       if (err)
         console.log(err);
       else {
-        console.log(rows[0]);
-        rawmatList.push(rows[0]);
-        // res.send(rows);
+        try {
+          var string = JSON.stringify(rows[0]);
+          var json = JSON.parse(string);
+          rawList.push(json);
+        } catch (error) {
+          console.log('can\'t check this raw material');
+          // console.log(error);
+        }
       }
     })
   }
-  console.log(rawmatList);
+
+  console.log('send');
+  console.log(rawList);
+  res.send(rawList);
+  rawList = [];
+  console.log('after');
+  console.log(rawList);
 })

@@ -15,15 +15,21 @@ export default function MaterialScreen({ navigation }) {
   const foodNum = navigation.getParam('foodNum');
   const foodName = navigation.getParam('foodName');
   const materialList = navigation.getParam('materialList');
+  // const veganList = navigation.getParam('veganList');
 
-  console.log('------------------------------');
+  const [isVegan, setIsVegan] = useState([]);
+  // const [veganList, setVeganList] = useState('');
+
+  console.log('==============================');
   console.log('Material Screen');
   console.log(foodNum, foodName);
   console.log(materialList);
+  // console.log(veganList);
 
   // select query by server
-  const postData = async () => {
-    console.log('postdata');
+  const getVeganList = async () => {
+    console.log('------------------------------');
+    console.log('getVeganList');
     const response = await fetch('http://192.168.25.6:4444/check_vegan/find', {
       method: 'post',
       headers: {
@@ -33,39 +39,73 @@ export default function MaterialScreen({ navigation }) {
         rawmatList : materialList
       })
     }).then((res) => res.json());
+
     console.log(response);
+    // setVeganList(response);
+    // console.log(veganList);
+    return response;
   }
-  
-  postData();
 
-  const [vegan, setVegan] = useState(false);
+  const checkVegan = async () => {
+    console.log('------------------------------');
+    const veganList = await getVeganList();
+    var i, j;
+    console.log('------------------------------');
+    console.log('checkVegan');
+    setIsVegan([]);
+    console.log(isVegan);
 
-  // select query by server
-  const getData = async () => {
-    const response = await fetch('http://192.168.25.6:4444/check_vegan');
-    const responseJson = await response.json();
-    // setData(responseJson);
-    console.log(responseJson);
+    console.log(veganList);
+
+    for (j = 0; j < veganList.length; j++) {
+      for (i = j; i < materialList.length; i++) {
+        if (materialList[i] == veganList[j].rawmat_name) {
+          isVegan.push([materialList[i], veganList[j].is_vegan]);
+          if (j != veganList.length -1)
+            break;
+        } 
+        else {
+          isVegan.push([materialList[i], 0]);
+        }
+      }
+    }
     
-    // var i;
-    // for (i=0; i<responseJson.length; i++) {
-    //   if (responseJson[i].rawmat_name == materialList[i]);
-    // }
+    setIsVegan(isVegan);
+    console.log(isVegan);
+    console.log('show list');
+
+    for (i=0; i<materialList.length; i++) {
+      // materialList[i].push(isVegan[i][1]);
+      console.log(materialList[i]);
+    }
+    // console.log(materialList);
   }
 
-  // getData();
+  // checkVegan();
+  // checkVegan();
+  console.log(materialList);
 
-  const showMaterialList = materialList.map(
-    (mat, idx) => {
-      return (
-        <View key={idx}>
-          <TouchableOpacity style={styles.materialArea}>
-            <Text style={styles.materialText}>{mat}</Text>
-            <View style={styles.veganArea}>
-              <Text style={styles.veganText}>Vegan</Text>
+  // const showVeganList = async () => {
+
+  //   await checkVegan();
+    const showVeganList = materialList.map(
+      (raw, idx) => {
+        return (
+          <View key={idx}>
+            <View style={styles.materialArea}>
+              <Text style={styles.materialText}>{raw}</Text>
+              {/* <Text style={styles.materialText}>{raw[1]}</Text> */}
+              {/* {raw[1] ? ( */}
+              <TouchableOpacity style={styles.veganArea}>
+                <Text style={styles.veganText}>Vegan</Text>
+              </TouchableOpacity>
+              {/* ) : (
+              <TouchableOpacity style={styles.nonVeganArea}>
+                <Text style={styles.veganText}>Vegan</Text>
+              </TouchableOpacity>
+            )} */}
             </View>
-          </TouchableOpacity>
-          {/* <View style={{ flex: 1, borderColor: 'gray', borderWidth: 1 }}>
+            {/* <View style={{ flex: 1, borderColor: 'gray', borderWidth: 1 }}>
             <FlatList
               data={vegan}
               keyExtractor={(item, index) => index.toString()}
@@ -76,11 +116,12 @@ export default function MaterialScreen({ navigation }) {
               }
             />
           </View> */}
-        </View>
-      )
-    }
-  )
-  
+          </View>
+        )
+      }
+    )
+  // }
+
   // status bar
   const isDarkMode = useColorScheme() === 'dark';
 
@@ -90,12 +131,12 @@ export default function MaterialScreen({ navigation }) {
 
   return (
     <View style={styles.container}>
-    {/* <Header /> */}
+      {/* <Header /> */}
       <StatusBar barStyle={
         isDarkMode ? 'light-content' : 'dark-content'
-        } 
+      }
       />
-      
+
       <View style={styles.titleArea}>
         <Text style={styles.titleText}>{foodName}</Text>
         <View style={styles.foodNumArea}>
@@ -104,7 +145,7 @@ export default function MaterialScreen({ navigation }) {
       </View>
 
       <ScrollView style={styles.listArea}>
-        {showMaterialList}
+        {showVeganList}
       </ScrollView>
     </View>
   )

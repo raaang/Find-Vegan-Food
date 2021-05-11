@@ -10,6 +10,8 @@ export default function ProductScreen({ navigation }) {
 
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState('');
+  const [veganList, setVeganList] = useState([]);
+  var vegan = [];
 
   console.log('==============================');
 
@@ -86,16 +88,18 @@ export default function ProductScreen({ navigation }) {
     console.log(foodName);
     console.log(materialList);
 
+    postData();
+    getData();
+    // vegan = await getVeganList();
+
     setLoading(false);          // finish loading animation
 
     navigation.navigate('Material', {
       foodNum: foodNum,
       foodName: foodName, 
-      materialList: materialList
+      materialList: materialList,
+      // veganList: vegan
     });
-
-    postData();
-    getData();
   }
 
   // loading animation
@@ -137,6 +141,26 @@ export default function ProductScreen({ navigation }) {
       })
     }).then((res) => res.json());
   }
+
+  // select query by server
+  const getVeganList = async () => {
+    console.log('------------------------------');
+    console.log('getVeganList');
+    const response = await fetch('http://192.168.25.6:4444/check_vegan/find', {
+      method: 'post',
+      headers: {
+        'content-type' : 'application/json'
+      },
+      body: JSON.stringify({
+        rawmatList : materialList
+      })
+    }).then((res) => res.json());
+
+    // setVeganList(response);
+    // console.log(veganList);
+    return response;
+  }
+
 
   return (
     <View style={{ flex: 1 }}>

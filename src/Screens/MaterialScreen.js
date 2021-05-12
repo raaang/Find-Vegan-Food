@@ -15,112 +15,37 @@ export default function MaterialScreen({ navigation }) {
   const foodNum = navigation.getParam('foodNum');
   const foodName = navigation.getParam('foodName');
   const materialList = navigation.getParam('materialList');
-  // const veganList = navigation.getParam('veganList');
-
-  const [isVegan, setIsVegan] = useState([]);
-  // const [veganList, setVeganList] = useState('');
+  const veganList = navigation.getParam('veganList');
 
   console.log('==============================');
   console.log('Material Screen');
   console.log(foodNum, foodName);
-  console.log(materialList);
-  // console.log(veganList);
+  console.log('materialList ', materialList);
+  console.log('veganList ', veganList);
 
-  // select query by server
-  const getVeganList = async () => {
-    console.log('------------------------------');
-    console.log('getVeganList');
-    const response = await fetch('http://192.168.25.6:4444/check_vegan/find', {
-      method: 'post',
-      headers: {
-        'content-type' : 'application/json'
-      },
-      body: JSON.stringify({
-        rawmatList : materialList
-      })
-    }).then((res) => res.json());
 
-    console.log(response);
-    // setVeganList(response);
-    // console.log(veganList);
-    return response;
-  }
-
-  const checkVegan = async () => {
-    console.log('------------------------------');
-    const veganList = await getVeganList();
-    var i, j;
-    console.log('------------------------------');
-    console.log('checkVegan');
-    setIsVegan([]);
-    console.log(isVegan);
-
-    console.log(veganList);
-
-    for (j = 0; j < veganList.length; j++) {
-      for (i = j; i < materialList.length; i++) {
-        if (materialList[i] == veganList[j].rawmat_name) {
-          isVegan.push([materialList[i], veganList[j].is_vegan]);
-          if (j != veganList.length -1)
-            break;
-        } 
-        else {
-          isVegan.push([materialList[i], 0]);
-        }
-      }
-    }
-    
-    setIsVegan(isVegan);
-    console.log(isVegan);
-    console.log('show list');
-
-    for (i=0; i<materialList.length; i++) {
-      // materialList[i].push(isVegan[i][1]);
-      console.log(materialList[i]);
-    }
-    // console.log(materialList);
-  }
-
-  // checkVegan();
-  // checkVegan();
-  console.log(materialList);
-
-  // const showVeganList = async () => {
-
-  //   await checkVegan();
-    const showVeganList = materialList.map(
+  const showVeganList = veganList.map(
       (raw, idx) => {
         return (
           <View key={idx}>
             <View style={styles.materialArea}>
-              <Text style={styles.materialText}>{raw}</Text>
+              <Text style={styles.materialText}>{raw[0]}</Text>
               {/* <Text style={styles.materialText}>{raw[1]}</Text> */}
-              {/* {raw[1] ? ( */}
+              {raw[1] ? (
               <TouchableOpacity style={styles.veganArea}>
                 <Text style={styles.veganText}>Vegan</Text>
               </TouchableOpacity>
-              {/* ) : (
-              <TouchableOpacity style={styles.nonVeganArea}>
-                <Text style={styles.veganText}>Vegan</Text>
-              </TouchableOpacity>
-            )} */}
+              ) : (
+                <TouchableOpacity style={styles.nonVeganArea}>
+                  <Text style={styles.veganText}>Non-Vegan</Text>
+                </TouchableOpacity>
+              )}
             </View>
-            {/* <View style={{ flex: 1, borderColor: 'gray', borderWidth: 1 }}>
-            <FlatList
-              data={vegan}
-              keyExtractor={(item, index) => index.toString()}
-              renderItem={({ item }) =>
-                <View>
-                  <Text>{item.user_name}</Text>
-                </View>
-              }
-            />
-          </View> */}
           </View>
         )
       }
     )
-  // }
+  
 
   // status bar
   const isDarkMode = useColorScheme() === 'dark';
@@ -212,7 +137,7 @@ const styles = StyleSheet.create({
   veganArea: {
     alignItems: 'center',
     // justifyContent: 'center',
-    width: '30%',
+    width: '35%',
     padding: 5,
     borderRadius: 25,
     backgroundColor: 'green'
@@ -220,7 +145,7 @@ const styles = StyleSheet.create({
   nonVeganArea: {
     alignItems: 'center',
     // justifyContent: 'center',
-    width: '30%',
+    width: '35%',
     padding: 5,
     borderRadius: 25,
     backgroundColor: 'firebrick'
@@ -228,7 +153,7 @@ const styles = StyleSheet.create({
   veganText: {
     alignItems: 'center',
     color: 'white',
-    fontSize: 18,
+    fontSize: 17,
     fontWeight: 'bold',
     fontFamily: 'NanumSquareR'
   },

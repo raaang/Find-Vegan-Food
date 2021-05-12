@@ -10,10 +10,29 @@ export default function ProductScreen({ navigation }) {
 
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState('');
-  const [veganList, setVeganList] = useState([]);
+  
   var vegan = [];
+  // var isVegan = [];
 
   console.log('==============================');
+
+  // loading animation
+  const animatedRotation = new Animated.Value(0);
+
+  const rotation = animatedRotation.interpolate({
+    inputRange: [0, 1],
+    outputRange: ['0deg', '360deg']
+  })
+  
+  if (loading) {
+    Animated.loop(
+      Animated.timing(animatedRotation, {
+        toValue: 1,
+        easing: Easing.linear,
+        useNativeDriver: true
+      })
+    ).start()
+  }
 
   const getFoodInfo = async () => {
     const response = await fetch(
@@ -84,40 +103,30 @@ export default function ProductScreen({ navigation }) {
     const materialName = await foodMaterial.RAWMTRL_NM;
     const materialList = materialName.split(',');
 
+    console.log('setMaterialList');
     console.log(foodNum);
     console.log(foodName);
     console.log(materialList);
 
     postData();
     getData();
-    // vegan = await getVeganList();
+
+    const veganList = await getVeganList(materialList);
+    // console.log(veganList);
+
+    const findVegan = await checkVegan(materialList, veganList);
+    console.log('------------------------------');
+    console.log('final');
+    // console.log(findVegan);
 
     setLoading(false);          // finish loading animation
 
     navigation.navigate('Material', {
       foodNum: foodNum,
-      foodName: foodName, 
+      foodName: foodName,
       materialList: materialList,
-      // veganList: vegan
+      veganList: findVegan 
     });
-  }
-
-  // loading animation
-  const animatedRotation = new Animated.Value(0);
-  
-  const rotation = animatedRotation.interpolate({
-    inputRange: [0, 1],
-    outputRange: ['0deg', '360deg']
-  })
-  
-  if (loading) {
-    Animated.loop(
-      Animated.timing(animatedRotation, {
-        toValue: 1,
-        easing: Easing.linear,
-        useNativeDriver: true
-      })
-    ).start()
   }
 
   // select query by server
@@ -142,24 +151,88 @@ export default function ProductScreen({ navigation }) {
     }).then((res) => res.json());
   }
 
+  
   // select query by server
-  const getVeganList = async () => {
+  const getVeganList = async (materialList) => {
     console.log('------------------------------');
     console.log('getVeganList');
-    const response = await fetch('http://192.168.25.6:4444/check_vegan/find', {
-      method: 'post',
-      headers: {
-        'content-type' : 'application/json'
-      },
-      body: JSON.stringify({
-        rawmatList : materialList
-      })
-    }).then((res) => res.json());
+    console.log('material ',materialList);
+    var i;
 
-    // setVeganList(response);
-    // console.log(veganList);
-    return response;
+    console.log('------------------------------');
+    vegan = [];
+    console.log('vegan', vegan);
+
+    for (i = 0; i < materialList.length; i++) {
+      // console.log(materialList[i]);
+      console.log('------------------------------');
+      try {
+        const response = await fetch('http://192.168.25.6:4444/check_vegan/find', {
+          method: 'post',
+          headers: {
+            'content-type': 'application/json'
+          },
+          body: JSON.stringify({
+            rawmatList: materialList[i]
+          })
+        }).then((res) => res.json());
+
+        console.log(response);
+        vegan.push(response);
+        console.log('1', vegan);
+      } catch (err) {
+        console.log(err);
+      }
+    }
+
+    console.log(vegan);
+    return vegan;
   }
+  
+  const checkVegan = async (materialList, veganList) => {
+    console.log('------------------------------');
+    console.log('checkVegan');
+    var i, j;
+    var isVegan = [];
+    // console.log(isVegan.length);
+    // console.log(isVegan);
+
+    // console.log(materialList);
+    // console.log(materialList.length);
+    // console.log(veganList);
+    console.log(veganList.length);
+
+    console.log('------------------------------');
+    if (veganList.length == 0) {
+      for (i=0; i<materialList.length; i++) {
+        isVegan.push([materialList[i], 0]);
+      }
+    } else {
+      for (j = 0; j < veganList.length; j++) {
+        for (i = j; i < materialList.length; i++) {
+          console.log(j, i);
+          if (materialList[i] == veganList[j].rawmat_name) {
+            isVegan.push([materialList[i], veganList[j].is_vegan]);
+            // console.log('name in veganList');
+            if (j != veganList.length - 1) {
+              // console.log('break');
+              // console.log('------------------------------');
+              break;
+            }
+          }
+          else {
+            isVegan.push([materialList[i], 0]);
+            // console.log('no name in veganList');
+          }
+        }
+      }
+    }
+
+    console.log(isVegan.length);
+    console.log(isVegan);
+    return isVegan;
+  }
+
 
 
   return (

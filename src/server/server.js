@@ -65,6 +65,20 @@ app.post('/product/insert', function (req, res) {
     })
 })
 
+app.post('/product/update', function (req, res) {
+  const data = req.body;
+  // console.log(data);
+  connection.query('update vegan.product set date=current_time where product_name=?;', data.barcode,
+    function (err, rows) {
+      if (err)
+        console.log(err);
+      else {
+        console.log(rows);
+        res.send(rows);
+      }
+    })
+})
+
 app.get('/save_product', function (req, res) {
   connection.query('select * from product', function (err, rows) {
     if (err)
@@ -92,6 +106,7 @@ app.get('/check_vegan', function (req, res) {
   // console.log(data);
   // const sql = 'select * from check_vegan where rawmat_name="req.body"';
   console.log('check_vegan');
+  console.log(req);
   // console.log(res);
 
   connection.query('select * from check_vegan', function (err, rows) {
@@ -104,17 +119,12 @@ app.get('/check_vegan', function (req, res) {
   })
 })
 
-let rawList = [];
-
 app.post('/check_vegan/find', function (req, res) {
-  // let rawList = [];
   console.log('check_vegan/find');
   // console.log(req.body.rawmatList);
-  const rawmatList = req.body.rawmatList;
+  const rawmat_name = req.body.rawmatList;
 
-  var i;
-  for (i = 0; i < rawmatList.length; i++) {
-    connection.query('select * from check_vegan where rawmat_name=?', rawmatList[i], 
+  connection.query('select rawmat_name, is_vegan from check_vegan where rawmat_name=?', rawmat_name,
     function (err, rows) {
       if (err)
         console.log(err);
@@ -122,19 +132,13 @@ app.post('/check_vegan/find', function (req, res) {
         try {
           var string = JSON.stringify(rows[0]);
           var json = JSON.parse(string);
-          rawList.push(json);
+          console.log(json);
+          res.send(json);
         } catch (error) {
           console.log('can\'t check this raw material');
-          // console.log(error);
+          res.send();
         }
       }
-    })
-  }
-
-  console.log('send');
-  console.log(rawList);
-  res.send(rawList);
-  rawList = [];
-  console.log('after');
-  console.log(rawList);
+    }
+  )
 })

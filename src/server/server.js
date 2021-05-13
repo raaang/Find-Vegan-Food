@@ -51,11 +51,25 @@ app.get('/product', function (req, res) {
   })
 })
 
+app.post('/product/find', function (req, res) {
+  const data = req.body;
+  // console.log(data);
+  connection.query('select * from product where barcode=?',
+    data.barcode, function (err, rows) {
+      if (err)
+        console.log(err);
+      else {
+        console.log(rows);
+        res.send(rows);
+      }
+    })
+})
+
 app.post('/product/insert', function (req, res) {
   const data = req.body;
   // console.log(data);
-  connection.query('insert into product values(?,?,?)', [data.barcode, data.foodNum, data.foodName],
-    function (err, rows) {
+  connection.query('insert into product(barcode, product_num, product_name) values(?,?,?)',
+    [data.barcode, data.foodNum, data.foodName], function (err, rows) {
       if (err)
         console.log(err);
       else {
@@ -68,10 +82,11 @@ app.post('/product/insert', function (req, res) {
 app.post('/product/update', function (req, res) {
   const data = req.body;
   // console.log(data);
-  connection.query('update vegan.product set date=current_time where product_name=?;', data.barcode,
-    function (err, rows) {
-      if (err)
+  connection.query('update product set date=current_time where barcode=?;',
+    data.barcode, function (err, rows) {
+      if (err) {
         console.log(err);
+      }
       else {
         console.log(rows);
         res.send(rows);
@@ -102,13 +117,8 @@ app.get('/search', function (req, res) {
 })
 
 app.get('/check_vegan', function (req, res) {
-  // console.log('req: '+req);
-  // console.log(data);
-  // const sql = 'select * from check_vegan where rawmat_name="req.body"';
   console.log('check_vegan');
   console.log(req);
-  // console.log(res);
-
   connection.query('select * from check_vegan', function (err, rows) {
     if (err)
       console.log(err);

@@ -25,26 +25,26 @@ export default function MaterialScreen({ navigation }) {
 
 
   const showVeganList = veganList.map(
-      (raw, idx) => {
-        return (
-          <View key={idx}>
-            <View style={styles.materialArea}>
-              <Text style={styles.materialText}>{raw[0]}</Text>
-              {/* <Text style={styles.materialText}>{raw[1]}</Text> */}
-              {raw[1] ? (
+    (raw, idx) => {
+      return (
+        <View key={idx}>
+          <View style={styles.materialArea}>
+            <Text style={styles.materialText}>{raw[0]}</Text>
+            {/* <Text style={styles.materialText}>{raw[1]}</Text> */}
+            {raw[1] ? (
               <TouchableOpacity style={styles.veganArea}>
                 <Text style={styles.veganText}>Vegan</Text>
               </TouchableOpacity>
-              ) : (
-                <TouchableOpacity style={styles.nonVeganArea}>
-                  <Text style={styles.veganText}>Non-Vegan</Text>
-                </TouchableOpacity>
-              )}
-            </View>
+            ) : (
+              <TouchableOpacity style={styles.nonVeganArea}>
+                <Text style={styles.veganText}>Non-Vegan</Text>
+              </TouchableOpacity>
+            )}
           </View>
-        )
-      }
-    )
+        </View>
+      )
+    }
+  )
   
 
   // status bar

@@ -12,7 +12,7 @@ export default function ProductScreen({ navigation }) {
   const [data, setData] = useState('');
   
   var vegan = [];
-  // var isVegan = [];
+  var i, j;
 
   console.log('==============================');
 
@@ -93,7 +93,7 @@ export default function ProductScreen({ navigation }) {
     setFoodNum(foodInfo.PRDLST_REPORT_NO);
     setFoodName(foodInfo.PRDLST_NM);
 
-    getData();
+    selectFoodData();
   }
 
   const getMaterialList = async () => {
@@ -108,8 +108,13 @@ export default function ProductScreen({ navigation }) {
     console.log(foodName);
     console.log(materialList);
 
-    postData();
-    getData();
+    selectFoodData();
+    console.log('dataLength', data.length);
+    if (data.length == 0) {
+      insertFoodData();
+    } else {
+      updateFoodData();
+    }
 
     const veganList = await getVeganList(materialList);
     // console.log(veganList);
@@ -130,15 +135,46 @@ export default function ProductScreen({ navigation }) {
   }
 
   // select query by server
-  const getData = async () => {
+  const selectAllFoodData = async () => {
     const response = await fetch('http://192.168.25.6:4444/product');
     const responseJson = await response.json();
-    setData(responseJson);
+    // setData(responseJson);
+    console.log(responseJson);
+  }
+
+  const selectFoodData = async () => {
+    console.log('select Data');
+    const response = await fetch('http://192.168.25.6:4444/product/find', {
+      method: 'post',
+      headers: {
+        'content-type' : 'application/json'
+      },
+      body: JSON.stringify({
+        barcode: barcodeValue.data
+      })
+    }).then((res) => res.json());
+    setData(response);
+    // console.log(data);
   }
 
   // insert query by server
-  const postData = async () => {
+  const insertFoodData = async () => {
+    console.log('insert Data');
     await fetch('http://192.168.25.6:4444/product/insert', {
+      method: 'post',
+      headers: {
+        'content-type' : 'application/json'
+      },
+      body: JSON.stringify({
+        barcode: barcodeValue.data, 
+        foodNum: foodNum, 
+        foodName: foodName
+      })
+    }).then((res) => res.json());
+  }
+
+  const updateFoodData = async () => {
+    await fetch('http://192.168.25.6:4444/product/update', {
       method: 'post',
       headers: {
         'content-type' : 'application/json'
@@ -157,7 +193,6 @@ export default function ProductScreen({ navigation }) {
     console.log('------------------------------');
     console.log('getVeganList');
     console.log('material ',materialList);
-    var i;
 
     console.log('------------------------------');
     vegan = [];
@@ -177,9 +212,9 @@ export default function ProductScreen({ navigation }) {
           })
         }).then((res) => res.json());
 
-        console.log(response);
+        // console.log(response);
         vegan.push(response);
-        console.log('1', vegan);
+        // console.log('1', vegan);
       } catch (err) {
         console.log(err);
       }
@@ -192,7 +227,6 @@ export default function ProductScreen({ navigation }) {
   const checkVegan = async (materialList, veganList) => {
     console.log('------------------------------');
     console.log('checkVegan');
-    var i, j;
     var isVegan = [];
     // console.log(isVegan.length);
     // console.log(isVegan);

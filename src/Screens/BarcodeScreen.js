@@ -1,15 +1,7 @@
 import React, { useRef, useState } from 'react';
-import { 
-  StyleSheet, 
-  View,
-  Text, 
-  SafeAreaView,
-  TouchableOpacity, 
-  Platform,
-  PermissionsAndroid,
-  Button
-} from 'react-native';
+import { StyleSheet, View, Text, SafeAreaView, TouchableOpacity, Platform, PermissionsAndroid, Button } from 'react-native';
 import { RNCamera } from 'react-native-camera';
+import CustomHeader from '../Components/CustomHeader';
 
 export default function BarcodeScreen({ navigation }) {
   const cameraRef = useRef();
@@ -74,44 +66,41 @@ export default function BarcodeScreen({ navigation }) {
   }
 
   return (
-    <View style={{ flex: 1 }}>
-      {openScanner ? (
-        <View style={styles.container}>
-          <View style={styles.barcodeArea}>
-            <RNCamera
-              ref={cameraRef}
-              style={styles.barcode}
-              type={RNCamera.Constants.Type.back}
-              flashMode={RNCamera.Constants.FlashMode.auto}
-              onBarCodeRead={
-                (event) => onBarcodeScan(event)
-              }
-              androidCameraPermissionOptions={{
-                title: 'Permission to use camera',
-                message: 'We need your permission to use your camera',
-                buttonPositive: 'Ok',
-                buttonNegative: 'Cancel'
-              }}
-            />
-            {/* <TouchableOpacity
-            style={styles.saveBtnArea}
-            onPress={takePicture}
-          >
-            <Text style={styles.saveBtnText}>Save Barcode Picture</Text>
-          </TouchableOpacity> */}
+    <SafeAreaView style={{ flex: 1 }}>
+      <CustomHeader title='Barcode Scan' isHome={true} navigation={navigation} />
+      <View style={{ flex: 1 }}>
+        {openScanner ? (
+          <View style={styles.container}>
+            <View style={styles.barcodeArea}>
+              <RNCamera
+                ref={cameraRef}
+                style={styles.barcode}
+                type={RNCamera.Constants.Type.back}
+                flashMode={RNCamera.Constants.FlashMode.auto}
+                onBarCodeRead={
+                  (event) => onBarcodeScan(event)
+                }
+                androidCameraPermissionOptions={{
+                  title: 'Permission to use camera',
+                  message: 'We need your permission to use your camera',
+                  buttonPositive: 'Ok',
+                  buttonNegative: 'Cancel'
+                }}
+              />
+            </View>
           </View>
-        </View>
-      ) : (
-        <View style={styles.container}>
-          <TouchableOpacity
-            style={styles.btnArea}
-            onPress={onOpenScanner}
-          >
-            <Text style={styles.btnText}>Barcode Scan</Text>
-          </TouchableOpacity>
-        </View>
-      )}
-    </View>
+        ) : (
+          <View style={styles.container}>
+            <TouchableOpacity
+              style={styles.btnArea}
+              onPress={onOpenScanner}
+            >
+              <Text style={styles.btnText}>Barcode Scan</Text>
+            </TouchableOpacity>
+          </View>
+        )}
+      </View>
+    </SafeAreaView>
   )
 }
 

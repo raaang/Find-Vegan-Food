@@ -1,8 +1,12 @@
 import React, { useState } from 'react';
-import { Animated, Button, Easing, FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Animated, Button, Easing, FlatList, SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import CustomHeader from '../Components/CustomHeader';
 
-export default function ProductScreen({ navigation }) {
-  const barcodeValue = navigation.getParam('barcodeValue');
+export default function ProductScreen({ route, navigation }) {
+  // const barcodeValue = navigation.getParam('barcodeValue');
+  // const barcodeValue = JSON.stringify(barcodeValue);
+  const { barcodeValue } = route.params;
+  console.log(barcodeValue);
   const apiKey = '85e2be4bc56846348d50';
 
   const [foodNum, setFoodNum] = useState('');
@@ -270,11 +274,12 @@ export default function ProductScreen({ navigation }) {
 
 
   return (
-    <View style={{ flex: 1 }}>
+    <SafeAreaView style={{ flex: 1 }}>
+      <CustomHeader title='Product' isHome={false} navigation={navigation} />
       {loading ? (
         <View style={styles.container}>
           <Animated.Image
-            source={require('../Images/spinner_blue.png')}
+            source={require('../Images/Icon/loader_120px.png')}
             style={{
               alignItems: 'center',
               justifyContent: 'center',
@@ -289,18 +294,6 @@ export default function ProductScreen({ navigation }) {
           <Text style={styles.titleText}>Barcode: {barcodeValue.data}</Text>
           <Text style={styles.titleText}>{foodName}</Text>
           <Text></Text>
-
-          {/* <View style={{ flex: 1, borderColor: 'gray', borderWidth: 1 }}>
-            <FlatList
-              data={data}
-              keyExtractor={(item, index) => index.toString()}
-              renderItem={({ item }) =>
-                <View>
-                  <Text>{item.user_name}</Text>
-                </View>
-              }
-            />
-          </View> */}
 
           <TouchableOpacity
             style={styles.btnArea}
@@ -317,8 +310,7 @@ export default function ProductScreen({ navigation }) {
           </TouchableOpacity>
         </View>
       )}
-    </View>
-
+    </SafeAreaView>
   )
 }
 

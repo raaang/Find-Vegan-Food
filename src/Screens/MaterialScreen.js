@@ -1,21 +1,17 @@
 import React, { useState } from 'react';
-import { 
-  FlatList, 
-  ScrollView, 
-  StatusBar, 
-  StyleSheet, 
-  Text, 
-  TouchableOpacity, 
-  useColorScheme, 
-  View 
-} from 'react-native';
-import { Colors, Header } from 'react-native/Libraries/NewAppScreen';
+import { FlatList, SafeAreaView, ScrollView, StatusBar, StyleSheet, Text, TouchableOpacity, useColorScheme, View } from 'react-native';
+import { Colors } from 'react-native/Libraries/NewAppScreen';
+import CustomHeader from '../Components/CustomHeader';
 
-export default function MaterialScreen({ navigation }) {
-  const foodNum = navigation.getParam('foodNum');
-  const foodName = navigation.getParam('foodName');
-  const materialList = navigation.getParam('materialList');
-  const veganList = navigation.getParam('veganList');
+export default function MaterialScreen({ route, navigation }) {
+  const { foodNum } = route.params;
+  const { foodName } = route.params;
+  const { materialList } = route.params;
+  const { veganList } = route.params;
+  // const foodNum = navigation.getParam('foodNum');
+  // const foodName = navigation.getParam('foodName');
+  // const materialList = navigation.getParam('materialList');
+  // const veganList = navigation.getParam('veganList');
 
   console.log('==============================');
   console.log('Material Screen');
@@ -55,24 +51,27 @@ export default function MaterialScreen({ navigation }) {
   };
 
   return (
-    <View style={styles.container}>
-      {/* <Header /> */}
-      <StatusBar barStyle={
-        isDarkMode ? 'light-content' : 'dark-content'
-      }
-      />
+    <SafeAreaView style={{ flex: 1 }}>
+      <CustomHeader title='Raw Material' isHome={false} navigation={navigation} />
+      <View style={styles.container}>
+        {/* <Header /> */}
+        <StatusBar barStyle={
+          isDarkMode ? 'light-content' : 'dark-content'
+        }
+        />
 
-      <View style={styles.titleArea}>
-        <Text style={styles.titleText}>{foodName}</Text>
-        <View style={styles.foodNumArea}>
-          <Text style={styles.foodNumText}>Product No. {foodNum}</Text>
+        <View style={styles.titleArea}>
+          <Text style={styles.titleText}>{foodName}</Text>
+          <View style={styles.foodNumArea}>
+            <Text style={styles.foodNumText}>Product No. {foodNum}</Text>
+          </View>
         </View>
-      </View>
 
-      <ScrollView style={styles.listArea}>
-        {showVeganList}
-      </ScrollView>
-    </View>
+        <ScrollView style={styles.listArea}>
+          {showVeganList}
+        </ScrollView>
+      </View>
+    </SafeAreaView>
   )
 }
 

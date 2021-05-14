@@ -1,13 +1,6 @@
 import React, { useState } from 'react';
-import { 
-  Button, 
-  SafeAreaView, 
-  StyleSheet, 
-  Text, 
-  TextInput, 
-  TouchableOpacity, 
-  View 
-} from 'react-native';
+import { Button, SafeAreaView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import CustomHeader from '../Components/CustomHeader';
 
 export default function SignUpScreen({ navigation }) {
 
@@ -17,33 +10,36 @@ export default function SignUpScreen({ navigation }) {
   }
 
   return (
-    <View style={styles.container}>
-      <View style={styles.inputView}>
-        <TextInput 
-          style={styles.inputText}
-          placeholder='ID'
-        />
+    <SafeAreaView style={{ flex: 1 }}>
+      <CustomHeader title="Sign Up" isHome={false} navigation={navigation} />
+      <View style={styles.container}>
+        <View style={styles.inputView}>
+          <TextInput
+            style={styles.inputText}
+            placeholder='ID'
+          />
+        </View>
+        <View style={styles.inputView}>
+          <TextInput
+            style={styles.inputText}
+            placeholder='Password'
+          />
+        </View>
+        <View style={styles.inputView}>
+          <TextInput
+            style={styles.inputText}
+            placeholder='Email'
+          />
+        </View>
+
+        <TouchableOpacity
+          style={styles.btnArea}
+          onPress={pressHandler}
+        >
+          <Text style={styles.text}>Sign Up</Text>
+        </TouchableOpacity>
       </View>
-      <View style={styles.inputView}>
-        <TextInput 
-          style={styles.inputText}
-          placeholder='Password'
-        />
-      </View>
-      <View style={styles.inputView}>
-        <TextInput 
-          style={styles.inputText}
-          placeholder='Email'
-        />
-      </View>
-      
-      <TouchableOpacity 
-        style={styles.btnArea}
-        onPress={pressHandler}
-      >
-        <Text style={styles.text}>Sign Up</Text>
-      </TouchableOpacity>
-    </View>
+    </SafeAreaView>
   )
 }
 

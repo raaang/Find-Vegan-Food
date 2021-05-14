@@ -1,42 +1,43 @@
 import React, { useState } from 'react';
-import { 
-  Button, 
-  SafeAreaView, 
-  StyleSheet, 
-  Text, 
-  TextInput, 
-  TouchableOpacity, 
-  View 
-} from 'react-native';
+import { Button, SafeAreaView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import CustomHeader from '../Components/CustomHeader';
 
 export default function LoginScreen({ navigation }) {
 
   const pressHandler = () => {
-    navigation.push('Barcode');
+    navigation.navigate('Barcode');
+  }
+
+  const pressSignupHandler = () => {
+    navigation.navigate('SignUp');
+    // console.log('press SignUp');
   }
 
   return (
-    <View style={styles.container}>
-      <View style={styles.inputView}>
-        <TextInput 
-          style={styles.inputText}
-          placeholder='ID'
-        />
+    <SafeAreaView style={{ flex: 1 }}>
+      <CustomHeader title='Login' isHome={false} navigation={navigation} />
+      <View style={styles.container}>
+        <View style={styles.inputView}>
+          <TextInput
+            style={styles.inputText}
+            placeholder='ID'
+          />
+        </View>
+        <View style={styles.inputView}>
+          <TextInput
+            style={styles.inputText}
+            placeholder='Password'
+          />
+        </View>
+
+        <TouchableOpacity
+          style={styles.loginArea}
+          onPress={pressHandler}
+        >
+          <Text style={styles.btnText}>Sign In</Text>
+        </TouchableOpacity>
       </View>
-      <View style={styles.inputView}>
-        <TextInput 
-          style={styles.inputText}
-          placeholder='Password'
-        />
-      </View>
-      
-      <TouchableOpacity 
-        style={styles.btnArea}
-        onPress={pressHandler}
-      >
-        <Text style={styles.btnText}>Sign In</Text>
-      </TouchableOpacity>
-    </View>
+    </SafeAreaView>
   )
 }
 
@@ -47,7 +48,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center'
   },
 
-  btnArea: {
+  loginArea: {
     alignItems: 'center',
     justifyContent: 'center',
     width: '60%',
@@ -55,6 +56,15 @@ const styles = StyleSheet.create({
     marginBottom: '5%',
     borderRadius: 5,
     backgroundColor: 'cornflowerblue'
+  },
+  singUpArea: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '60%',
+    padding: 10,
+    marginBottom: '5%',
+    borderRadius: 5,
+    backgroundColor: 'silver'
   },
   btnText: {
     color: 'white',

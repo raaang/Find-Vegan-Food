@@ -1,7 +1,13 @@
+<<<<<<< HEAD
 import React, { useState } from 'react';
 import { Image, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import CustomHeader from '../Components/CustomHeader';
 import Picker from '@gregfrench/react-native-wheel-picker';
+=======
+import React from 'react';
+import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import CustomHeader from '../Components/CustomHeader';
+>>>>>>> fd7c3561935d3fbf1fc0d2a0a824c48f8cabb9f2
 
 export default function VeganInfoScreen({ navigation }) {
   const veganName = ['Vegan', 'Lacto', 'Ovo', 'Lacto-ovo', 'Pasco', 'Pollo'];
@@ -11,9 +17,12 @@ export default function VeganInfoScreen({ navigation }) {
   
   const backColor = ['lightgreen', 'aliceblue', 'lightyellow', 'palegoldenrod', 'lightblue', 'wheat'];
 
+<<<<<<< HEAD
   const [selectedItem, setSelectedItem] = useState(2);
 
 
+=======
+>>>>>>> fd7c3561935d3fbf1fc0d2a0a824c48f8cabb9f2
   const saladImage = (flag) => {
     if (flag)
       return require('../Images/Food/salad_color.png');
@@ -61,16 +70,21 @@ export default function VeganInfoScreen({ navigation }) {
       alert(veganName);
   }
 
+<<<<<<< HEAD
   const pressBtnHandler = () => {
     
       alert('press');
   }
 
   var i = 0;
+=======
+  var i = -1;
+>>>>>>> fd7c3561935d3fbf1fc0d2a0a824c48f8cabb9f2
 
   const showVeganList = veganFlag.map(
     (flag, idx) => {
       i++;
+<<<<<<< HEAD
       console.log(veganName[i - 1]);
       return (
         <TouchableOpacity key={idx} style={{
@@ -84,6 +98,22 @@ export default function VeganInfoScreen({ navigation }) {
         >
           <View style={styles.veganTextArea}>
             <Text style={styles.veganText}>{veganName[i - 1]}</Text>
+=======
+      console.log(veganName[i]);
+      return (
+        <TouchableOpacity key={idx} style={{
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            padding: 15,
+            paddingLeft: 20,
+            backgroundColor: backColor[i]
+          }}
+          onPress={pressVeganList(veganName[i])}
+        >
+          <View style={styles.veganTextArea}>
+            <Text style={styles.veganText}>{veganName[i]}</Text>
+>>>>>>> fd7c3561935d3fbf1fc0d2a0a824c48f8cabb9f2
           </View>
 
           <View style={styles.veganImageArea}>
@@ -110,6 +140,7 @@ export default function VeganInfoScreen({ navigation }) {
       </View> */}
 
       <View style={styles.listArea}>
+<<<<<<< HEAD
         <Text style={styles.title}>Click Your Vegan Type</Text>
         {showVeganList}
       </View>
@@ -132,6 +163,11 @@ export default function VeganInfoScreen({ navigation }) {
           <Picker.Item label={value} value={idx} key={idx} />
         ))}
       </Picker>
+=======
+      <Text style={styles.text}>Click Your Vegan Type</Text>
+        {showVeganList}
+      </View>
+>>>>>>> fd7c3561935d3fbf1fc0d2a0a824c48f8cabb9f2
     </View>
   )
 }
@@ -152,6 +188,7 @@ const styles = StyleSheet.create({
     // borderColor: 'blue'
   },
 
+<<<<<<< HEAD
   title: {
     color: 'black',
     fontSize: 20,
@@ -187,6 +224,8 @@ const styles = StyleSheet.create({
   },
 
 
+=======
+>>>>>>> fd7c3561935d3fbf1fc0d2a0a824c48f8cabb9f2
   listArea: {
     flex: 1,
     width: '100%',
@@ -226,5 +265,16 @@ const styles = StyleSheet.create({
     width: 30,
     height: 30,
     padding: 5,
+<<<<<<< HEAD
+=======
+  },
+
+  text: {
+    color: 'black',
+    fontSize: 20,
+    fontWeight: 'bold',
+    fontFamily: 'NanumSquareR',
+    marginBottom: 20
+>>>>>>> fd7c3561935d3fbf1fc0d2a0a824c48f8cabb9f2
   }
 })

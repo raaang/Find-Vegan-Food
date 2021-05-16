@@ -1,6 +1,10 @@
 import React from 'react';
 import { Button, Image, SafeAreaView, ScrollView, StyleSheet, View } from 'react-native';
 
+<<<<<<< HEAD
+=======
+// import { createStackNavigator } from 'react-navigation-stack';
+>>>>>>> fd7c3561935d3fbf1fc0d2a0a824c48f8cabb9f2
 import { createAppContainer } from 'react-navigation';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { NavigationContainer } from '@react-navigation/native';

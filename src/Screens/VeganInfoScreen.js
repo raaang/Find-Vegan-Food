@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { Image, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { Image, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import CustomHeader from '../Components/CustomHeader';
-import Picker from '@gregfrench/react-native-wheel-picker';
+import { Picker } from '@react-native-picker/picker';
+import RNPickerSelect from 'react-native-picker-select';
 
 export default function VeganInfoScreen({ navigation }) {
   const veganName = ['Vegan', 'Lacto', 'Ovo', 'Lacto-ovo', 'Pasco', 'Pollo'];
@@ -11,7 +12,7 @@ export default function VeganInfoScreen({ navigation }) {
   
   const backColor = ['lightgreen', 'aliceblue', 'lightyellow', 'palegoldenrod', 'lightblue', 'wheat'];
 
-  const [selectedItem, setSelectedItem] = useState(2);
+  const [selectedItem, setSelectedItem] = useState('');
 
 
   const saladImage = (flag) => {
@@ -56,24 +57,12 @@ export default function VeganInfoScreen({ navigation }) {
       return require('../Images/Food/meat.png');
   }
 
-  const pressVeganList = (name) => {
-    if (veganName == 'Vegan')
-      alert(veganName);
-  }
-
-  const pressBtnHandler = () => {
-    
-      alert('press');
-  }
-
   var i = 0;
-
   const showVeganList = veganFlag.map(
     (flag, idx) => {
       i++;
-      console.log(veganName[i - 1]);
       return (
-        <TouchableOpacity key={idx} style={{
+        <View key={idx} style={{
           flexDirection: 'row',
           alignItems: 'center',
           justifyContent: 'space-between',
@@ -94,44 +83,35 @@ export default function VeganInfoScreen({ navigation }) {
             <Image style={styles.veganImage} source={chickenImage(flag[4])} resizeMode='contain' />
             <Image style={styles.veganImage} source={meatImage(flag[5])} resizeMode='contain' />
           </View>
-        </TouchableOpacity>
+        </View>
       )
     }
   )
 
+  console.log(selectedItem);
+
   return (
     <View style={{ flex: 1 }}>
       <CustomHeader title="Vegan Info" isHome={true} navigation={navigation} />
-      {/* <View style={styles.container}>
-        <Image
-          style={styles.image}
-          source={require('../Images/vegan_info.jpg')}
-        />
-      </View> */}
+      <View style={styles.container}>
 
-      <View style={styles.listArea}>
-        <Text style={styles.title}>Click Your Vegan Type</Text>
+        <Text style={styles.title}>Choose Your Vegan Type</Text>
+        
         {showVeganList}
+
+        <View style={styles.pickerArea}>
+          <Picker
+            mode='dialog'
+            style={styles.picker}
+            onValueChange={(val, idx) => setSelectedItem({ val })}
+          >
+            {veganName.map((name, idx) => (
+              <Picker.Item label={name} value={name} key={idx} />
+            ))}
+          </Picker>
+        </View>
+
       </View>
-
-      <TouchableOpacity
-        style={styles.btnArea}
-        onPress={pressBtnHandler}
-      >
-        <Text style={styles.btnText}>Choose Your Vegan Type</Text>
-      </TouchableOpacity>
-
-      <Picker style={styles.picker}
-        lineColor='gray' //to set top and bottom line color (Without gradients)
-        lineGradientColorFrom="#008000" //to set top and bottom starting gradient line color
-        lineGradientColorTo="#FF5733" //to set top and bottom ending gradient
-        selectedValue={selectedItem}
-        itemStyle={{ color: "black", fontSize: 26 }}
-        onValueChange={(index) => setSelectedItem(index)}>
-        {veganName.map((value, idx) => (
-          <Picker.Item label={value} value={idx} key={idx} />
-        ))}
-      </Picker>
     </View>
   )
 }
@@ -143,14 +123,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  image: {
-    width: '90%',
-    alignItems: 'center',
-    justifyContent: 'center',
-    resizeMode: 'contain',
-    // borderWidth: 1,
-    // borderColor: 'blue'
-  },
 
   title: {
     color: 'black',
@@ -159,50 +131,24 @@ const styles = StyleSheet.create({
     fontFamily: 'NanumSquareR',
     marginBottom: 20
   },
-  
-  picker: {
-    width: 200,
-    height: 100,
-    alignItems: 'center',
+
+  pickerArea: {
     justifyContent: 'center',
-    borderWidth: 1, 
+    width: '55%',
+    marginTop: 20,
+    paddingHorizontal: 10,
+    borderRadius: 5,
+    borderWidth: 1,
     borderColor: 'gray'
   },
-
-  btnArea: {
-    alignSelf: 'center',
-    justifyContent: 'center',
-    width: '60%',
-    padding: 10,
-    marginBottom: '5%',
-    borderRadius: 5,
-    backgroundColor: 'cornflowerblue'
-  },
-  btnText: {
-    alignSelf: 'center',
-    color: 'white',
+  picker: {
+    width: 200,
+    height: 50,
+    textAlign: 'center',
     fontSize: 15,
-    fontWeight: 'bold',
-    fontFamily: 'NanumSquareR'
-  },
-
- listArea: {
-    flex: 1,
-    width: '100%',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  veganArea: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    // marginBottom: 10,
-    padding: 15,
-    paddingLeft: 20,
-    // borderWidth: 1,
-    borderColor: 'gray',
-    borderBottomWidth: 1,
-    // backgroundColor: color
+    fontFamily: 'NanumSquareR',
+    borderWidth: 1,
+    borderColor: 'gray'
   },
 
   veganTextArea: {

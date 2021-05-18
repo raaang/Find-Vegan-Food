@@ -10,6 +10,10 @@ export default function CustomHeader({title, isHome, navigation}) {
     navigation.openDrawer();
   }
 
+  const pressSearchHandler = () => {
+    alert('search');
+  }
+
   return (
     <View style={styles.container}>
       { isHome ? (
@@ -35,6 +39,12 @@ export default function CustomHeader({title, isHome, navigation}) {
         <Text style={{ textAlign: 'center' }}>{title}</Text>
       </View>
       <View style={styles.right}>
+          <TouchableOpacity onPress={pressSearchHandler}>
+            <Image style={styles.back}
+              source={require('../Images/Icon/search.png')}
+              resizeMode='contain'
+            />
+          </TouchableOpacity>
       </View>
     </View>
   )
@@ -69,6 +79,6 @@ const styles = StyleSheet.create({
     width: 35,
     height: 35,
     resizeMode: 'contain',
-    marginHorizontal: 10,
+    marginHorizontal: 15,
   }
 })

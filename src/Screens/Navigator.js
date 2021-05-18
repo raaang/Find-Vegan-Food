@@ -20,11 +20,8 @@ import VeganInfoScreen from './VeganInfoScreen';
 function CustomDrawerContent(props) {
   return (
     <SafeAreaView style={{flex:1, backgroundColor: 'cornflowerblue'}}>
-      <View>
-
-      </View>
       <ScrollView>
-        <View></View>
+        
       </ScrollView>
     </SafeAreaView>
   )
@@ -33,6 +30,14 @@ function CustomDrawerContent(props) {
 const navOptionHandler = () => ({
   headerShown: false
 })
+
+function SearchStack() {
+  return (
+    <Stack.Navigator screenOptions={{headerStyle: {...stackStyles}}}>
+      <Stack.Screen name="Search" component={SearchProductScreen} />
+    </Stack.Navigator>
+  )
+}
 
 const StackStart = createStackNavigator();
 
@@ -43,25 +48,6 @@ function StartStack() {
       <StackStart.Screen name="Login" component={LoginScreen} options={navOptionHandler} />
       <StackStart.Screen name="Barcode" component={BarcodeScreen} options={navOptionHandler} />
     </StackStart.Navigator>
-  )
-}
-
-function LoginStack() {
-  return (
-    <Stack.Navigator initialRouteName="Login">
-        <Stack.Screen name="Login" component={LoginScreen} options={navOptionHandler} />
-        <Stack.Screen name="Barcode" component={BarcodeScreen} options={navOptionHandler} />
-    </Stack.Navigator>
-  )
-}
-
-function SignUpStack() {
-  return (
-    <Stack.Navigator initialRouteName="Login">
-      <Stack.Screen name="Login" component={LoginScreen} options={navOptionHandler}/>
-      <Stack.Screen name="SignUp" component={SignUpScreen} options={navOptionHandler}/>
-      <Stack.Screen name="Login" component={LoginScreen} options={navOptionHandler}/>
-    </Stack.Navigator>
   )
 }
 

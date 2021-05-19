@@ -6,7 +6,7 @@ export default function SignUpScreen({ navigation }) {
 
   const pressHandler = () => {
     alert('Finish Sign Up');
-    navigation.push('Start');
+    navigation.push('Login');
   }
 
   return (

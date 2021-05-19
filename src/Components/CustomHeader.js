@@ -1,5 +1,8 @@
 import React from 'react';
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import Icon from 'react-native-vector-icons/FontAwesome5'
+import IonIcon from 'react-native-vector-icons/Ionicons'
+import SearchScreen from '../Screens/SearchScreen';
 
 export default function CustomHeader({title, isHome, navigation}) {
   const pressBackHandler = () => {
@@ -12,39 +15,35 @@ export default function CustomHeader({title, isHome, navigation}) {
 
   const pressSearchHandler = () => {
     alert('search');
+    // navigation.navigate('Search');
   }
 
   return (
     <View style={styles.container}>
+      {/* <SearchScreen /> */}
+      
       { isHome ? (
         <View style={styles.left}>
-          <TouchableOpacity onPress={pressMenuHandler}>
-            <Image style={styles.menu}
-              source={require('../Images/Icon/menu.png')}
-              resizeMode='contain'
-            />
+          <TouchableOpacity style={styles.menu} onPress={pressMenuHandler}>
+            <IonIcon name="menu" size={30} />
           </TouchableOpacity>
         </View>
       ) : (
         <View style={styles.left}>
-          <TouchableOpacity onPress={pressBackHandler}>
-            <Image style={styles.back}
-              source={require('../Images/Icon/left-arrow.png')}
-              resizeMode='contain'
-            />
+          <TouchableOpacity style={styles.back} onPress={pressBackHandler}>
+            <IonIcon name='chevron-back' size={30} />
           </TouchableOpacity>
         </View>
       )}
+
       <View style={styles.middle}>
         <Text style={{ textAlign: 'center' }}>{title}</Text>
       </View>
+
       <View style={styles.right}>
-          <TouchableOpacity onPress={pressSearchHandler}>
-            <Image style={styles.back}
-              source={require('../Images/Icon/search.png')}
-              resizeMode='contain'
-            />
-          </TouchableOpacity>
+        <TouchableOpacity style={styles.search} onPress={pressSearchHandler}>
+          <IonIcon name="search" size={30} color="#000" />
+        </TouchableOpacity>
       </View>
     </View>
   )
@@ -55,23 +54,14 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     height: 50,
   },
-  middle: {
-    flex: 1.5,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
+
   left: {
     flex: 1,
     justifyContent: 'center',
   },
-  right: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'flex-end',
-  },
   back: { 
-    width: 30, 
-    height: 30, 
+    width: 35, 
+    height: 35, 
     resizeMode: 'contain',
     marginHorizontal: 10,
   },
@@ -79,6 +69,24 @@ const styles = StyleSheet.create({
     width: 35,
     height: 35,
     resizeMode: 'contain',
-    marginHorizontal: 15,
+    marginHorizontal: 10,
+  },
+
+  middle: {
+    flex: 1.5,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+
+  right: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'flex-end',
+  },
+  search: {
+    width: 35,
+    height: 35,
+    resizeMode: 'contain',
+    marginHorizontal: 10,
   }
 })

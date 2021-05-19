@@ -2,19 +2,18 @@ import React from 'react';
 import { Button, Image, SafeAreaView, ScrollView, StyleSheet, View } from 'react-native';
 
 import { createAppContainer } from 'react-navigation';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { NavigationContainer } from '@react-navigation/native';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 
 import StartScreen from './StartScreen';
 import LoginScreen from './LoginScreen';
 import BarcodeScreen from './BarcodeScreen';
-import ScanBarcodeScreen from './ScanBarcodeScreen';
 import ProductScreen from './ProductScreen';
 import MaterialScreen from './MaterialScreen';
 import SignUpScreen from './SignUpScreen';
-import SearchProductScreen from './SearchProductScreen';
+import SearchScreen from './SearchScreen';
 import VeganInfoScreen from './VeganInfoScreen';
 
 function CustomDrawerContent(props) {
@@ -31,11 +30,13 @@ const navOptionHandler = () => ({
   headerShown: false
 })
 
+const StackSearch = createStackNavigator();
+
 function SearchStack() {
   return (
-    <Stack.Navigator screenOptions={{headerStyle: {...stackStyles}}}>
-      <Stack.Screen name="Search" component={SearchProductScreen} />
-    </Stack.Navigator>
+    <StackSearch.Navigator>
+      <StackSearch.Screen name="Search" component={SearchScreen} options={navOptionHandler} />
+    </StackSearch.Navigator>
   )
 }
 
@@ -46,7 +47,7 @@ function StartStack() {
     <StackStart.Navigator initialRouteName="Start">
       <StackStart.Screen name="Start" component={StartScreen} options={navOptionHandler} />
       <StackStart.Screen name="Login" component={LoginScreen} options={navOptionHandler} />
-      <StackStart.Screen name="Barcode" component={BarcodeScreen} options={navOptionHandler} />
+      <StackStart.Screen name="SignUp" component={SignUpScreen} options={navOptionHandler} />
     </StackStart.Navigator>
   )
 }
@@ -118,6 +119,7 @@ export default function Navigator() {
         <Drawer.Screen name='Vegan Information' component={VeganInfoScreen} />
         <Drawer.Screen name='Barcode' component={BarcodeStack} />
         <Drawer.Screen name='Save Product' component={StartStack} />
+        <Drawer.Screen name='Search Product' component={SearchStack} />
       </Drawer.Navigator>
     </NavigationContainer>
   )

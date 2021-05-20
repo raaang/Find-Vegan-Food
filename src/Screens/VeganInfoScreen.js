@@ -170,6 +170,6 @@ const styles = StyleSheet.create({
     flex: 1,
     width: 30,
     height: 30,
-    padding: 5
+    padding: 5,
   }
 })

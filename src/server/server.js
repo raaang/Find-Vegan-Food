@@ -82,7 +82,7 @@ app.post('/product/insert', function (req, res) {
 app.post('/product/update', function (req, res) {
   const data = req.body;
   // console.log(data);
-  connection.query('update product set date=current_time where barcode=?;',
+  connection.query('update product set date=current_time where barcode=?',
     data.barcode, function (err, rows) {
       if (err) {
         console.log(err);

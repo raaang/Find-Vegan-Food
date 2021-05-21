@@ -8,17 +8,20 @@ export default function MaterialScreen({ route, navigation }) {
   const { foodName } = route.params;
   const { materialList } = route.params;
   const { veganList } = route.params;
-  // const foodNum = navigation.getParam('foodNum');
-  // const foodName = navigation.getParam('foodName');
-  // const materialList = navigation.getParam('materialList');
-  // const veganList = navigation.getParam('veganList');
+  const { routeName } = route.params;
+
+  var isSearch;
+  if (routeName == 'Search Product')
+    isSearch = <CustomHeader title='Raw Material' isHome={false} isSearch={true} navigation={navigation} />
+  else
+    isSearch = <CustomHeader title='Raw Material' isHome={false} navigation={navigation} />
 
   console.log('==============================');
   console.log('Material Screen');
   console.log(foodNum, foodName);
   console.log('materialList ', materialList);
   console.log('veganList ', veganList);
-
+  console.log('previousRouteName: ', routeName);
 
   const showVeganList = veganList.map(
     (raw, idx) => {
@@ -42,30 +45,28 @@ export default function MaterialScreen({ route, navigation }) {
     }
   )
   
-
   // status bar
   const isDarkMode = useColorScheme() === 'dark';
 
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
-  };
+  // const backgroundStyle = {
+  //   backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
+  // };
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
-      <CustomHeader title='Raw Material' isHome={false} navigation={navigation} />
+      {isSearch}
       <View style={styles.container}>
-        {/* <Header /> */}
         <StatusBar barStyle={
           isDarkMode ? 'light-content' : 'dark-content'
         }
         />
 
-        <View style={styles.titleArea}>
+        <TouchableOpacity style={styles.titleArea}>
           <Text style={styles.titleText}>{foodName}</Text>
           <View style={styles.foodNumArea}>
             <Text style={styles.foodNumText}>Product No. {foodNum}</Text>
           </View>
-        </View>
+        </TouchableOpacity>
 
         <ScrollView style={styles.listArea}>
           {showVeganList}

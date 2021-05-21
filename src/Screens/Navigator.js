@@ -37,7 +37,8 @@ const StackSearch = createStackNavigator();
 function SearchStack() {
   return (
     <StackSearch.Navigator>
-      <StackSearch.Screen name="Search" component={Search} options={navOptionHandler} />
+      <StackSearch.Screen name='Search' component={Search} options={navOptionHandler} />
+      <StackSearch.Screen name='Material' component={MaterialScreen} options={navOptionHandler} />
     </StackSearch.Navigator>
   )
 }
@@ -47,10 +48,10 @@ const StackStart = createStackNavigator();
 function StartStack() {
   return (
     <StackStart.Navigator initialRouteName="Start">
-      <StackStart.Screen name="Start" component={StartScreen} options={navOptionHandler} />
-      <StackStart.Screen name="Login" component={LoginScreen} options={navOptionHandler} />
-      <StackStart.Screen name="SignUp" component={SignUpScreen} options={navOptionHandler} />
-      <StackStart.Screen name="Search" component={Search} options={navOptionHandler} />
+      <StackStart.Screen name='Start' component={StartScreen} options={navOptionHandler} />
+      <StackStart.Screen name='Login' component={LoginScreen} options={navOptionHandler} />
+      <StackStart.Screen name='SignUp' component={SignUpScreen} options={navOptionHandler} />
+      <StackStart.Screen name='Search' component={Search} options={navOptionHandler} />
     </StackStart.Navigator>
   )
 }
@@ -60,9 +61,9 @@ const StackBarcode = createStackNavigator();
 function BarcodeStack() {
   return (
     <StackBarcode.Navigator initialRouteName="Start">
-      <StackBarcode.Screen name="Barcode" component={BarcodeScreen} options={navOptionHandler}/>
-      <StackBarcode.Screen name="Product" component={ProductScreen} options={navOptionHandler}/>
-      <StackBarcode.Screen name="Material" component={MaterialScreen} options={navOptionHandler}/>
+      <StackBarcode.Screen name='Barcode' component={BarcodeScreen} options={navOptionHandler}/>
+      <StackBarcode.Screen name='Product' component={ProductScreen} options={navOptionHandler}/>
+      <StackBarcode.Screen name='Material' component={MaterialScreen} options={navOptionHandler}/>
     </StackBarcode.Navigator>
   )
 }

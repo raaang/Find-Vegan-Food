@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Animated, Button, Easing, FlatList, SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import CustomHeader from '../Components/CustomHeader';
 
@@ -37,6 +37,38 @@ export default function ProductScreen({ route, navigation }) {
       })
     ).start()
   }
+
+  const [food, setFood] = useState([]);
+  const [material, setMaterial] = useState([]);
+
+  // useEffect(() => {
+  //   fetch('http://openapi.foodsafetykorea.go.kr/api/' + apiKey +
+  //   '/C005/json/1/5/BAR_CD=' + barcodeValue.data
+  //   ).then((response) => response.json())
+  //   .then((responseJson) => {
+  //     const foodList = responseJson.C005.row;
+  //     setFood(foodList[foodList.length - 1]);
+  //   })
+  //   .catch((error) => {
+  //     console.error(error);
+  //   })
+  // }, []);
+
+  // setFoodNum(food.PRDLST_REPORT_NO);
+  // setFoodName(food.PRDLST_NM);
+
+  // useEffect(() => {
+  //   fetch('http://openapi.foodsafetykorea.go.kr/api/' + apiKey +
+  //   '/C002/json/1/5/PRDLST_REPORT_NO=' + foodNumber
+  //   ).then((response) => response.json())
+  //   .then((responseJson) => {
+  //     const materialList = responseJson.C002.row;
+  //     setMaterial(materialList[materialList.length - 1]);
+  //   })
+  //   .catch((error) => {
+  //     console.log(error);
+  //   })
+  // }, []);
 
   const getFoodInfo = async () => {
     const response = await fetch(
@@ -105,7 +137,10 @@ export default function ProductScreen({ route, navigation }) {
 
     const foodMaterial = await getMaterialInfo(foodNum);
     const materialName = await foodMaterial.RAWMTRL_NM;
-    const materialList = materialName.split(',');
+    var materialList = materialName.split(',');
+    
+    // make unique array of raw material DB
+    materialList = setArrayUnique(materialList);
 
     console.log('setMaterialList');
     console.log(foodNum);
@@ -131,6 +166,7 @@ export default function ProductScreen({ route, navigation }) {
     setLoading(false);          // finish loading animation
 
     navigation.navigate('Material', {
+      routeName: 'Product',
       foodNum: foodNum,
       foodName: foodName,
       materialList: materialList,
@@ -223,7 +259,7 @@ export default function ProductScreen({ route, navigation }) {
         console.log(err);
       }
     }
-
+    
     console.log(vegan);
     return vegan;
   }
@@ -232,37 +268,44 @@ export default function ProductScreen({ route, navigation }) {
     console.log('------------------------------');
     console.log('checkVegan');
     var isVegan = [];
+    var findVegan;
     // console.log(isVegan.length);
     // console.log(isVegan);
 
     // console.log(materialList);
     // console.log(materialList.length);
     // console.log(veganList);
-    console.log(veganList.length);
+    // console.log(veganList.length);
 
-    console.log('------------------------------');
+    // there is no raw material info in DB
     if (veganList.length == 0) {
-      for (i=0; i<materialList.length; i++) {
+      for (i = 0; i < materialList.length; i++) {
         isVegan.push([materialList[i], 0]);
       }
-    } else {
-      for (j = 0; j < veganList.length; j++) {
-        for (i = j; i < materialList.length; i++) {
-          console.log(j, i);
+    }
+    // there is raw material info in DB
+    else {
+      for (i = 0; i < materialList.length; i++) {
+        for (j = 0; j < veganList.length; j++) {
+          // console.log(i, j);
           if (materialList[i] == veganList[j].rawmat_name) {
-            isVegan.push([materialList[i], veganList[j].is_vegan]);
+            findVegan = veganList[j].is_vegan;
             // console.log('name in veganList');
-            if (j != veganList.length - 1) {
-              // console.log('break');
-              // console.log('------------------------------');
-              break;
-            }
+            break;
+            // if (j != veganList.length - 1) {
+            //   console.log('break');
+            //   console.log('------------------------------');
+            //   break;
+            // }
           }
           else {
-            isVegan.push([materialList[i], 0]);
+            findVegan = 0;
             // console.log('no name in veganList');
           }
         }
+        isVegan.push([materialList[i], findVegan])
+        // console.log(isVegan);
+        // console.log('------------------------------');
       }
     }
 
@@ -271,6 +314,34 @@ export default function ProductScreen({ route, navigation }) {
     return isVegan;
   }
 
+  const setArrayUnique = (array) => {
+    
+    // const set = new Set(array);
+    // const uniqueArr = [...set];
+
+    // const uniqueArr = array.filter((element, idx) => {
+    //   return vegan.indexOf(element) === idx;
+    // });
+
+    // const uniqueArr = array.reduce((prev, now) => {
+    //   if (!prev.some(obj => obj[0] !== now[0] )) {
+    //     prev.push(now);
+    //     console.log('push');
+    //   }
+    //   return prev;
+    // }, []);
+
+    var uniques = [];
+    var itemsFound = {};
+
+    for(var i = 0, l = array.length; i < l; i++) {
+        var stringified = JSON.stringify(array[i]);
+        if(itemsFound[stringified]) { continue; }
+        uniques.push(array[i]);
+        itemsFound[stringified] = true;
+    }
+    return uniques;
+  }
 
 
   return (

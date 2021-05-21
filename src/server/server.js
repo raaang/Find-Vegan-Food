@@ -41,7 +41,7 @@ app.get('/member', function (req, res) {
 })
 
 app.get('/product', function (req, res) {
-  connection.query('select * from product', function (err, rows) {
+  connection.query('select * from product order by date desc', function (err, rows) {
     if (err)
       console.log(err);
     else {

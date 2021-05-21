@@ -15,6 +15,8 @@ import MaterialScreen from './MaterialScreen';
 import SignUpScreen from './SignUpScreen';
 import SearchScreen from './SearchScreen';
 import VeganInfoScreen from './VeganInfoScreen';
+import Search from './Search';
+import Search2 from './Search2';
 
 function CustomDrawerContent(props) {
   return (
@@ -35,7 +37,7 @@ const StackSearch = createStackNavigator();
 function SearchStack() {
   return (
     <StackSearch.Navigator>
-      <StackSearch.Screen name="Search" component={SearchScreen} options={navOptionHandler} />
+      <StackSearch.Screen name="Search" component={Search} options={navOptionHandler} />
     </StackSearch.Navigator>
   )
 }
@@ -48,6 +50,7 @@ function StartStack() {
       <StackStart.Screen name="Start" component={StartScreen} options={navOptionHandler} />
       <StackStart.Screen name="Login" component={LoginScreen} options={navOptionHandler} />
       <StackStart.Screen name="SignUp" component={SignUpScreen} options={navOptionHandler} />
+      <StackStart.Screen name="Search" component={Search} options={navOptionHandler} />
     </StackStart.Navigator>
   )
 }
@@ -76,15 +79,15 @@ function TabNavigator() {
           if (route.name === 'Vegan Info') {
             iconName = focused
               ? require('../Images/Icon/vegan_blue.png')
-              : require('../Images/Icon/vegan.png');
+              : require('../Images/Icon/vegan.png')
           } else if (route.name === 'Barcode') {
             iconName = focused
               ? require('../Images/Icon/barcode_blue.png')
-              : require('../Images/Icon/barcode.png');
+              : require('../Images/Icon/barcode.png')
           } else {
             iconName = focused
               ? require('../Images/Icon/paper-clip_blue.png')
-              : require('../Images/Icon/paper-clip.png');
+              : require('../Images/Icon/paper-clip.png')
           }
 
           return <Image source={iconName} style={{ width: 25, height: 25 }} resizeMode='contain' />;
@@ -110,17 +113,22 @@ function TabNavigator() {
 
 const Drawer = createDrawerNavigator();
 
+function DrawerNavigation() {
+  return (
+    <Drawer.Navigator initialRouteName="MenuTab">
+      {/* drawerContent={props => CustomDrawerContent(props)}> */}
+      <Drawer.Screen name='MenuTab' component={TabNavigator} />
+      <Drawer.Screen name='Vegan Information' component={VeganInfoScreen} />
+      <Drawer.Screen name='Search Product' component={SearchStack} />
+    </Drawer.Navigator>
+  )
+}
+
+
 export default function Navigator() {
   return (
     <NavigationContainer>
-      <Drawer.Navigator initialRouteName="MenuTab">
-        {/* drawerContent={props => CustomDrawerContent(props)}> */}
-        <Drawer.Screen name='MenuTab' component={TabNavigator} />
-        <Drawer.Screen name='Vegan Information' component={VeganInfoScreen} />
-        <Drawer.Screen name='Barcode' component={BarcodeStack} />
-        <Drawer.Screen name='Save Product' component={StartStack} />
-        <Drawer.Screen name='Search Product' component={SearchStack} />
-      </Drawer.Navigator>
+      <DrawerNavigation />
     </NavigationContainer>
   )
 }

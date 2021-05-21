@@ -1,6 +1,6 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import ImageResizeMode from 'react-native/Libraries/Image/ImageResizeMode';
-import { Animated, Dimensions, Easing, Image, SafeAreaView, ScrollView, StyleSheet, Text, TextInput, TouchableHighlight, TouchableOpacity, View } from 'react-native';
+import { Animated, Dimensions, Easing, FlatList, Image, SafeAreaView, ScrollView, StyleSheet, Text, TextInput, TouchableHighlight, TouchableOpacity, View } from 'react-native';
 import IonIcon from 'react-native-vector-icons/Ionicons';
 
 
@@ -11,6 +11,96 @@ export default function SearchScreen({ navigation }) {
   // const pressBackHandler = () => {
   //   navigation.goBack();
   // }
+
+  const [search, setSearch] = useState('');
+  const [filteredDataSource, setFilteredDataSource] = useState([]);
+  const [masterDataSource, setMasterDataSource] = useState([]);
+
+  useEffect(() => {
+    fetch('http://192.168.25.6:4444/product')
+      .then((response) => response.json())
+      .then((responseJson) => {
+        setFilteredDataSource(responseJson);
+        setMasterDataSource(responseJson);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }, []);
+  
+  const getProductName = async () => {
+    setFilteredDataSource([]);
+    setMasterDataSource([]);
+
+    const response = await fetch('http://192.168.25.6:4444/product');
+    const responseJson = await response.json();
+    // setData(responseJson);
+    console.log(responseJson);
+
+    setFilteredDataSource(responseJson);
+    setMasterDataSource(responseJson);
+    console.log(filteredDataSource);
+    console.log(masterDataSource);
+  }
+
+  const searchFilterFunction = (text) => {
+    // Check if searched text is not blank
+    if (text) {
+      // Inserted text is not blank
+      // Filter the masterDataSource
+      // Update FilteredDataSource
+      const newData = masterDataSource.filter(function (item) {
+        const itemData = item.product_name
+          ? item.product_name
+          : ''
+        const textData = text
+        return itemData.indexOf(textData) > -1;
+      });
+      setFilteredDataSource(newData);
+      setSearch(text);
+    } else {
+      // Inserted text is blank
+      // Update FilteredDataSource with masterDataSource
+      setFilteredDataSource(masterDataSource);
+      setSearch(text);
+    }
+  };
+
+  const onSearchFilter = (word) => {
+    const newData = filteredDataSource.filter()
+  }
+
+  const ItemView = ({ item }) => {
+    return (
+      // Flat List Item
+      <View style={styles.search_item}>
+        <IonIcon style={styles.item_icon} name="search" size={20} color="#ccc" />
+        <Text style={styles.itemText} onPress={() => getItem(item)}>
+          {item.product_name}
+          {' / '}
+          {item.barcode}
+        </Text>
+      </View>
+    )
+  }
+
+  const ItemSeparatorView = () => {
+    return (
+      // Flat List Item Separator
+      <View
+        style={{
+          height: 0.5,
+          width: '100%',
+          backgroundColor: '#C8C8C8',
+        }}
+      />
+    )
+  }
+  
+  const getItem = (item) => {
+    // Function for click on an item
+    alert('Name : ' + item.product_name + ' Barcode : ' + item.barcode);
+  };
 
   const [focus, setFocus] = useState(false);
   const [keyword, setKeyword] = useState('');
@@ -108,65 +198,91 @@ export default function SearchScreen({ navigation }) {
   return (
     <>
       {/* <SafeAreaView style={styles.header_safe_area}> */}
-        <View style={styles.header}>
-          <View style={styles.header_inner}>
-            
-            <View>
-              <Image
-                source={require('../Images/Icon/barcode.png')}
-                style={{ width: 150, height: 40, resizeMode: 'contain' }}
-              />
-            </View>
+      <View style={styles.header}>
+        <View style={styles.header_inner}>
 
-            <TouchableHighlight
-              activeOpacity={1}
-              underlayColor={'#ccd0d5'}
-              onPress={onFocus}
-              style={styles.search_icon_box}
-            >
-              <IonIcon name="search" size={30} />
-            </TouchableHighlight>
+          <View>
+            <Image
+              source={require('../Images/Icon/barcode.png')}
+              style={{ width: 150, height: 40, resizeMode: 'contain' }}
+            />
+          </View>
 
-            <Animated.View style={[styles.input_box, { translateX: input_box_translate_x }]}>
-              <Animated.View style={{ opacity: back_button_opacity }}>
-                <TouchableHighlight
-                  activeOpacity={1}
-                  underlayColor={'#ccd0d5'}
-                  onPress={onBlur}
-                  style={styles.back_icon_box}
-                >
-                  <IonIcon name='chevron-back' size={30} />
-                </TouchableHighlight>
-              </Animated.View>
+          <TouchableHighlight
+            activeOpacity={1}
+            underlayColor={'#ccd0d5'}
+            onPress={onFocus}
+            style={styles.search_icon_box}
+          >
+            <IonIcon name="search" size={30} />
+          </TouchableHighlight>
 
-              <View style={styles.inputArea}>
+          <Animated.View style={[styles.input_box, { translateX: input_box_translate_x }]}>
+            <Animated.View style={{ opacity: back_button_opacity }}>
+              <TouchableHighlight
+                activeOpacity={1}
+                underlayColor={'#ccd0d5'}
+                onPress={onBlur}
+                style={styles.back_icon_box}
+              >
+                <IonIcon name='chevron-back' size={30} />
+              </TouchableHighlight>
+            </Animated.View>
+
+            <View style={styles.inputArea}>
               <TextInput
                 ref={inputRef}
                 placeholder='Search Product'
                 clearButtonMode='always'
                 value={keyword}
-                onChangeText={(value) => setKeyword(value)}
+                onChangeText={(value) => searchFilterFunction(value)}
+                // onChangeText={(text) => searchFilterFunction(text)}
                 style={styles.input}
               />
               <TouchableOpacity
                 style={styles.clearInputBtn}
-                onPress={() => setKeyword('')}>
+                onPress={() => setKeyword('')}
+                // onPress={() => searchFilterFunction('')}
+              >
                 <IonIcon name='close-circle-outline' size={30} />
               </TouchableOpacity>
-              </View>
-            </Animated.View>
+            </View>
 
-          </View>
+          </Animated.View>
+
         </View>
+      </View>
       {/* </SafeAreaView> */}
 
       <Animated.View style={[styles.content, { opacity: content_opacity, transform: [{ translateY: content_translate_y }] }]}>
         <SafeAreaView style={styles.content_safe_area}>
           <View style={styles.content_inner}>
             <View style={styles.separator} />
-            { keyword === '' 
+            {/* {keyword === ''
+              ? ( */}
+                <View>
+                  <FlatList
+                    data={filteredDataSource}
+                    keyExtractor={(item, index) => index.toString()}
+                    ItemSeparatorComponent={ItemSeparatorView}
+                    renderItem={ItemView}
+                  >
+                  </FlatList>
+                </View>
+              {/* ) : (
+                // keyword.
+            )} */}
+
+            {/* {keyword === ''
               ? (
                 <View style={styles.image_placeholder_container}>
+                  <View style={{borderColor: 'green', borderWidth: 1, marginLeft: '-35%'}}>
+                    <Image
+                      stye={styles.image_placeholder}
+                      source={require('../Images/vegan_info.jpg')}
+                      resizeMode='center'
+                    />
+                  </View>
                   <Text style={styles.image_placeholder_text}>
                     Enter a few words{'\n'}
                     to a search on Barcode
@@ -191,7 +307,7 @@ export default function SearchScreen({ navigation }) {
                     <Text>Fake result 4</Text>
                   </View>
                 </ScrollView>
-              )}
+              )} */}
           </View>
         </SafeAreaView>
       </Animated.View>
@@ -307,14 +423,14 @@ const styles = StyleSheet.create({
     marginTop: 5,
     height: 1,
     backgroundColor: '#e4e6eb',
-    borderWidth: 1,
-    borderColor: 'black'
+    // borderWidth: 1,
+    // borderColor: 'black'
   },
   image_placeholder_container: {
     flex: 1,
     flexDirection: 'column',
     justifyContent: 'center',
-    marginTop: '-50%',
+    // marginTop: '-50%',
     borderWidth: 1,
     borderColor: 'violet'
   },
@@ -338,10 +454,21 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderBottomWidth: 1,
     borderBottomColor: '#e6e4eb',
-    marginLeft: 16
+    // paddingLeft: 16,
+    // borderWidth: 1,
+    // borderColor: 'red'
   },
   item_icon: {
-    marginRight: 15
+    marginHorizontal: 10,
+    // borderWidth: 1,
+    // borderColor: 'red'
+  },
+  itemText: {
+    fontSize: 14,
+    color: 'black',
+    // borderWidth: 1,
+    // borderColor: 'red',
+
   },
 
 

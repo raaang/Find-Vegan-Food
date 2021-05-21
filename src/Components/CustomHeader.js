@@ -1,13 +1,11 @@
-import React, { useRef, useState } from 'react';
-import { Animated, Dimensions, Easing, Image, StyleSheet, Text, TextInput, TouchableHighlight, TouchableOpacity, View } from 'react-native';
-import Icon from 'react-native-vector-icons/FontAwesome5'
+import React, { useEffect, useRef, useState } from 'react';
+import { Animated, Dimensions, Easing, FlatList, SafeAreaView, StyleSheet, Text, TextInput, TouchableHighlight, TouchableOpacity, View } from 'react-native';
 import IonIcon from 'react-native-vector-icons/Ionicons'
-import SearchScreen from '../Screens/SearchScreen';
 
 const width = Dimensions.get('window').width;
 const height = Dimensions.get('window').height;
 
-export default function CustomHeader({title, isHome, navigation}) {
+export default function CustomHeader({title, isHome, isSearch, navigation}) {
   const pressBackHandler = () => {
     navigation.goBack();
   }
@@ -15,7 +13,85 @@ export default function CustomHeader({title, isHome, navigation}) {
   const pressMenuHandler = () => {
     navigation.openDrawer();
   }
+
+  const pressSearchHandler = () => {
+    navigation.navigate('Search Product');
+  }
+
   
+  const [search, setSearch] = useState('');
+  const [filteredDataSource, setFilteredDataSource] = useState([]);
+  const [masterDataSource, setMasterDataSource] = useState([]);
+
+  useEffect(() => {
+    fetch('http://192.168.25.6:4444/product')
+      .then((response) => response.json())
+      .then((responseJson) => {
+        setFilteredDataSource(responseJson);
+        setMasterDataSource(responseJson);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }, []);
+
+  const searchFilterFunction = (text) => {
+    // Check if searched text is not blank
+    if (text) {
+      // Inserted text is not blank
+      // Filter the masterDataSource
+      // Update FilteredDataSource
+      const newData = masterDataSource.filter(function (item) {
+        const itemData = item.product_name
+          ? item.product_name
+          : ''
+        const textData = text
+        return itemData.indexOf(textData) > -1;
+      });
+      setFilteredDataSource(newData);
+      setSearch(text);
+    } else {
+      // Inserted text is blank
+      // Update FilteredDataSource with masterDataSource
+      setFilteredDataSource(masterDataSource);
+      setSearch(text);
+    }
+  };
+
+  const ItemView = ({ item }) => {
+    return (
+      // Flat List Item
+      <TouchableOpacity onPress={() => getItem(item)}>
+        <Text style={styles.listName}>{item.product_name}</Text>
+        <Text style={styles.listNum}>
+          Barcode No.{item.barcode}
+          {' / '}
+          Product No.{item.product_num}
+        </Text>
+      </TouchableOpacity>
+    );
+  };
+
+  const ItemSeparatorView = () => {
+    return (
+      // Flat List Item Separator
+      <View
+        style={{
+          height: 0.5,
+          width: '100%',
+          backgroundColor: '#C8C8C8',
+          flexDirection: 'row'
+        }}
+      />
+    );
+  };
+
+  const getItem = (item) => {
+    // Function for click on an item
+    alert('Id : ' + item.product_name + ' Title : ' + item.barcode);
+  };
+
+
   const [focus, setFocus] = useState(false);
   const [keyword, setKeyword] = useState('');
   const inputRef = useRef();
@@ -61,12 +137,12 @@ export default function CustomHeader({title, isHome, navigation}) {
     Animated.timing(back_button_opacity, back_button_opacity_config).start()
     Animated.timing(content_translate_y, content_translate_y_config).start()
     Animated.timing(content_opacity, content_opacity_config).start()
-    
+
     //force force
     // this.refs.inputRef.force();
     inputRef.current.focus();
   }
-  
+
   const onBlur = () => {
     // update state
     setFocus(false);
@@ -109,43 +185,49 @@ export default function CustomHeader({title, isHome, navigation}) {
     inputRef.current.blur()
   }
 
+
   return (
     <>
       <View style={styles.container}>
         {/* <SearchScreen /> */}
 
-        {isHome ? (
-          <View style={styles.left}>
+        <View style={styles.left}>
+          {isHome ? (
             <TouchableOpacity style={styles.menu} onPress={pressMenuHandler}>
               <IonIcon name="menu" size={30} />
             </TouchableOpacity>
-          </View>
-        ) : (
-          <View style={styles.left}>
+          ) : (
             <TouchableOpacity style={styles.back} onPress={pressBackHandler}>
               <IonIcon name='chevron-back' size={30} />
             </TouchableOpacity>
-          </View>
-        )}
+          )}
+        </View>
 
         <View style={styles.middle}>
           <Text style={{ textAlign: 'center' }}>{title}</Text>
         </View>
 
         <View style={styles.right}>
-          {/* <TouchableOpacity style={styles.search} onPress={pressSearchHandler}>
-          <IonIcon name="search" size={30} color="#000" />
-        </TouchableOpacity> */}
+          {isSearch ? (
+            <View>
 
-          <TouchableOpacity
-            activeOpacity={1}
-            underlayColor={'#ccd0d5'}
-            onPress={onFocus}
-            style={styles.search}
-          >
-            <IonIcon name="search" size={30} />
-          </TouchableOpacity>
+            </View>
+          ) : (
+            <TouchableOpacity style={styles.search} onPress={pressSearchHandler}>
+              <IonIcon name="search" size={30} color="#000" />
+            </TouchableOpacity>
+
+            // <TouchableHighlight
+            //   activeOpacity={1}
+            //   underlayColor={'#ccd0d5'}
+            //   onPress={onFocus}
+            //   style={styles.search_icon_box}
+            // >
+            //   <IonIcon name="search" size={30} />
+            // </TouchableHighlight>
+          )}
         </View>
+
 
         <Animated.View style={[styles.input_box, { translateX: input_box_translate_x }]}>
           <Animated.View style={{ opacity: back_button_opacity }}>
@@ -159,18 +241,45 @@ export default function CustomHeader({title, isHome, navigation}) {
             </TouchableHighlight>
           </Animated.View>
 
-          <TextInput
-            ref={inputRef}
-            placeholder='Search Product'
-            clearButtonMode='always'
-            value={keyword}
-            onChangeText={(value) => setKeyword(value)}
-            style={styles.input}
-          />
+          <View style={styles.inputArea}>
+            <TextInput
+              ref={inputRef}
+              placeholder='Search Product'
+              clearButtonMode='always'
+              value={keyword}
+              onChangeText={(value) => searchFilterFunction(value)}
+              // onChangeText={(text) => searchFilterFunction(text)}
+              style={styles.input}
+            />
+            <TouchableOpacity
+              style={styles.clearInputBtn}
+              onPress={() => setKeyword('')}
+            // onPress={() => searchFilterFunction('')}
+            >
+              <IonIcon name='close-circle-outline' size={30} />
+            </TouchableOpacity>
+          </View>
+
         </Animated.View>
       </View>
 
 
+      <Animated.View style={[styles.content, { opacity: content_opacity, transform: [{ translateY: content_translate_y }] }]}>
+        <SafeAreaView style={styles.content_safe_area}>
+          <View style={styles.content_inner}>
+            <View style={styles.separator} />
+              <View>
+                <FlatList
+                  data={filteredDataSource}
+                  keyExtractor={(item, index) => index.toString()}
+                  ItemSeparatorComponent={ItemSeparatorView}
+                  renderItem={ItemView}
+                >
+                </FlatList>
+              </View>
+          </View>
+        </SafeAreaView>
+      </Animated.View>
     </>
   )
 }
@@ -241,8 +350,8 @@ const styles = StyleSheet.create({
     width: '100%',
     // width: width - 32,
     paddingHorizontal: 10,
-    borderWidth: 1,
-    borderColor: 'blue'
+    // borderWidth: 1,
+    // borderColor: 'blue'
   },
   back_icon_box: {
     width: 40,
@@ -252,8 +361,16 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: 10,
-    borderWidth: 1,
-    borderColor: 'gray'
+    // borderWidth: 1,
+    // borderColor: 'gray'
+  },
+  inputArea: {
+    flex: 1,
+    height: 40,
+    borderRadius: 16,
+    backgroundColor: '#e4e6eb',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
   },
   input: {
     flex: 1,
@@ -262,8 +379,62 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     paddingHorizontal: 16,
     fontSize: 15,
-    borderWidth: 1,
-    borderColor: 'blue'
+    // borderWidth: 1,
+    // borderColor: 'blue'
+  },
+  clearInputBtn: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    // marginTop: 5,
+    // borderWidth: 1,
+    // borderColor: 'blue'
   },
 
+  
+  content: {
+    width: width,
+    height: height,
+    position: 'absolute',
+    left: 0,
+    bottom: 0,
+    zIndex: 999,
+    // borderWidth: 1,
+    // borderColor: 'black'
+  },
+  content_safe_area: {
+    flex: 1,
+    backgroundColor: 'white',
+    // borderWidth: 1,
+    // borderColor: 'blue'
+  },
+  content_inner: {
+    flex: 1,
+    paddingTop: 50,
+    // borderWidth: 1,
+    // borderColor: 'red'
+  },
+  separator: {
+    marginTop: 50,
+    height: 1,
+    backgroundColor: '#e4e6eb',
+    // borderWidth: 1,
+    // borderColor: 'black'
+  },
+
+  listName: {
+    padding: 10,
+    paddingLeft: 30,
+    justifyContent: 'center',
+    fontSize: 17,
+    fontFamily: 'NanumSquareR'
+  },
+  listNum: {
+    paddingBottom: 10,
+    paddingHorizontal: 20,
+    justifyContent: 'center',
+    color: 'silver',
+    fontSize: 12,
+    fontFamily: 'NanumSquareR',
+    // textAlign: 'center'
+  }
 })

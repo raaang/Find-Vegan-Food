@@ -105,6 +105,20 @@ app.get('/save_product', function (req, res) {
   })
 })
 
+app.post('/save_product/insert', function (req, res) {
+  const data = req.body;
+  // console.log(data);
+  // connection.query('insert into save_product(barcode, product_num, product_name) values(?,?,?)',
+  //   [data.barcode, data.foodNum, data.foodName], function (err, rows) {
+  //     if (err)
+  //       console.log(err);
+  //     else {
+  //       console.log(rows);
+  //       res.send(rows);
+  //     }
+  //   })
+})
+
 app.get('/search', function (req, res) {
   connection.query('select * from product', function (err, rows) {
     if (err)

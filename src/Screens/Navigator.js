@@ -17,6 +17,7 @@ import SearchScreen from './SearchScreen';
 import VeganInfoScreen from './VeganInfoScreen';
 import Search from './Search';
 import Search2 from './Search2';
+import SaveScreen from './SaveScreen';
 
 function CustomDrawerContent(props) {
   return (
@@ -107,7 +108,7 @@ function TabNavigator() {
     >
       <Tab.Screen name='Vegan Info' component={VeganInfoScreen} />
       <Tab.Screen name='Barcode' component={BarcodeStack} />
-      <Tab.Screen name='Save' component={StartStack} />
+      <Tab.Screen name='Save' component={SaveScreen} />
     </Tab.Navigator>
   )
 }
@@ -119,6 +120,7 @@ function DrawerNavigation() {
     <Drawer.Navigator initialRouteName="MenuTab">
       {/* drawerContent={props => CustomDrawerContent(props)}> */}
       <Drawer.Screen name='MenuTab' component={TabNavigator} />
+      <Drawer.Screen name='Login' component={StartStack} />
       <Drawer.Screen name='Vegan Information' component={VeganInfoScreen} />
       <Drawer.Screen name='Search Product' component={SearchStack} />
     </Drawer.Navigator>

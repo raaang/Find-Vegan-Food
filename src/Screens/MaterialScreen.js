@@ -52,6 +52,10 @@ export default function MaterialScreen({ route, navigation }) {
   //   backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
   // };
 
+  const pressTitleHandler = () => {
+    navigation.navigate('Save');
+  }
+
   return (
     <SafeAreaView style={{ flex: 1 }}>
       {isSearch}
@@ -61,7 +65,7 @@ export default function MaterialScreen({ route, navigation }) {
         }
         />
 
-        <TouchableOpacity style={styles.titleArea}>
+        <TouchableOpacity style={styles.titleArea} onPress={pressTitleHandler}>
           <Text style={styles.titleText}>{foodName}</Text>
           <View style={styles.foodNumArea}>
             <Text style={styles.foodNumText}>Product No. {foodNum}</Text>

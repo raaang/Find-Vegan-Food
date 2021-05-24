@@ -95,7 +95,7 @@ app.post('/product/update', function (req, res) {
 })
 
 app.get('/save_product', function (req, res) {
-  connection.query('select * from product', function (err, rows) {
+  connection.query('select * from save_product', function (err, rows) {
     if (err)
       console.log(err);
     else {
@@ -105,18 +105,32 @@ app.get('/save_product', function (req, res) {
   })
 })
 
+app.post('/save_product/find', function (req, res) {
+  const data = req.body;
+  console.log(data);
+  connection.query('select * from save_product where product_num=?',
+    data.product_num, function (err, rows) {
+      if (err)
+        console.log(err);
+      else {
+        console.log(rows);
+        res.send(rows);
+      }
+    })
+})
+
 app.post('/save_product/insert', function (req, res) {
   const data = req.body;
-  // console.log(data);
-  // connection.query('insert into save_product(barcode, product_num, product_name) values(?,?,?)',
-  //   [data.barcode, data.foodNum, data.foodName], function (err, rows) {
-  //     if (err)
-  //       console.log(err);
-  //     else {
-  //       console.log(rows);
-  //       res.send(rows);
-  //     }
-  //   })
+  console.log(data);
+  connection.query('insert into save_product(barcode, product_num, product_name) values(?,?,?)',
+    [data.barcode, data.product_num, data.product_name], function (err, rows) {
+      if (err)
+        console.log(err);
+      else {
+        console.log(rows);
+        res.send(rows);
+      }
+    })
 })
 
 app.get('/search', function (req, res) {

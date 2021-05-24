@@ -1,22 +1,49 @@
-import React, { useEffect, useRef, useState } from 'react';
-import ImageResizeMode from 'react-native/Libraries/Image/ImageResizeMode';
-import { Animated, Dimensions, Easing, FlatList, Image, SafeAreaView, ScrollView, StyleSheet, Text, TextInput, TouchableHighlight, TouchableOpacity, View } from 'react-native';
+// Searching using Search Bar Filter in React Native List View
+// https://aboutreact.com/react-native-search-bar-filter-on-listview/
+
+// import React in our code
+import React, { useState, useEffect } from 'react';
+
+// import all the components we are going to use
+import { SafeAreaView, Text, StyleSheet, View, FlatList, TouchableOpacity, Animated, Easing } from 'react-native';
+import { SearchBar } from 'react-native-elements';
 import IonIcon from 'react-native-vector-icons/Ionicons';
+import CustomHeader from '../Components/CustomHeader';
 
+const Search = ({ navigation }) => {
+  const apiKey = '85e2be4bc56846348d50';
 
-const width = Dimensions.get('window').width;
-const height = Dimensions.get('window').height;
+  const [loading, setLoading] = useState(false);
+  const [data, setData] = useState('');
 
-export default function SearchScreen({ navigation }) {
-  // const pressBackHandler = () => {
-  //   navigation.goBack();
-  // }
+  // loading animation
+  const animatedRotation = new Animated.Value(0);
+
+  const rotation = animatedRotation.interpolate({
+    inputRange: [0, 1],
+    outputRange: ['0deg', '360deg']
+  })
+
+  if (loading) {
+    Animated.loop(
+      Animated.timing(animatedRotation, {
+        toValue: 1,
+        easing: Easing.linear,
+        useNativeDriver: true
+      })
+    ).start()
+  }
+
+  
+  var vegan = [];
+  var i, j;
 
   const [search, setSearch] = useState('');
   const [filteredDataSource, setFilteredDataSource] = useState([]);
   const [masterDataSource, setMasterDataSource] = useState([]);
 
   useEffect(() => {
+    const interval = setInterval(() => {
     fetch('http://192.168.25.6:4444/product')
       .then((response) => response.json())
       .then((responseJson) => {
@@ -26,22 +53,10 @@ export default function SearchScreen({ navigation }) {
       .catch((error) => {
         console.error(error);
       });
+    }, 1000)
+
+    return () => clearInterval(interval)
   }, []);
-  
-  const getProductName = async () => {
-    setFilteredDataSource([]);
-    setMasterDataSource([]);
-
-    const response = await fetch('http://192.168.25.6:4444/product');
-    const responseJson = await response.json();
-    // setData(responseJson);
-    console.log(responseJson);
-
-    setFilteredDataSource(responseJson);
-    setMasterDataSource(responseJson);
-    console.log(filteredDataSource);
-    console.log(masterDataSource);
-  }
 
   const searchFilterFunction = (text) => {
     // Check if searched text is not blank
@@ -66,25 +81,21 @@ export default function SearchScreen({ navigation }) {
     }
   };
 
-  const onSearchFilter = (word) => {
-    const newData = filteredDataSource.filter()
-  }
-
-  const ItemView = ({ item }) => {
+  const getItem = ({ item }) => {
     return (
       // Flat List Item
-      <View style={styles.search_item}>
-        <IonIcon style={styles.item_icon} name="search" size={20} color="#ccc" />
-        <Text style={styles.itemText} onPress={() => getItem(item)}>
-          {item.product_name}
+      <TouchableOpacity onPress={() => getMaterialList(item)}>
+        <Text style={styles.listName}>{item.product_name}</Text>
+        <Text style={styles.listNum}>
+          Barcode No.{item.barcode}
           {' / '}
-          {item.barcode}
+          Product No.{item.product_num}
         </Text>
-      </View>
-    )
-  }
+      </TouchableOpacity>
+    );
+  };
 
-  const ItemSeparatorView = () => {
+  const getItemSeparator = () => {
     return (
       // Flat List Item Separator
       <View
@@ -92,402 +103,240 @@ export default function SearchScreen({ navigation }) {
           height: 0.5,
           width: '100%',
           backgroundColor: '#C8C8C8',
+          flexDirection: 'row'
         }}
       />
-    )
-  }
-  
-  const getItem = (item) => {
+    );
+  };
+
+  const pressItemHandler = (item) => {
     // Function for click on an item
     alert('Name : ' + item.product_name + ' Barcode : ' + item.barcode);
   };
 
-  const [focus, setFocus] = useState(false);
-  const [keyword, setKeyword] = useState('');
-  const inputRef = useRef();
+  const getMaterialInfo = async (item) => {
+    const response = await fetch(
+      'http://openapi.foodsafetykorea.go.kr/api/' + apiKey +
+      '/C002/json/1/5/PRDLST_REPORT_NO=' + item.product_num
+    );
 
-  const input_box_translate_x = new Animated.Value(width);
-  const back_button_opacity = new Animated.Value(0);
-  const content_translate_y = new Animated.Value(height);
-  const content_opacity = new Animated.Value(0);
+    if (response.status == 200) {
+      const responseJson = await response.json();
+      try {
+        const material = await responseJson.C002.row;
+        if (material != null || material != '') {
+          console.log('------------------------------');
+          console.log('Material Info: ', material[material.length - 1]);
 
-  const onFocus = () => {
-    // update state
-    setFocus(true);
-
-    const input_box_translate_x_config = {
-      duration: 200,
-      toValue: 1,
-      easing: Easing.inOut(Easing.ease),
-      useNativeDriver: true
+          return material[material.length - 1];
+        } else {
+          alert('Can\'t find product material');
+          return;
+        }
+      } catch (err) {
+        console.warn(err);
+      }
+    } else {
+      return;
     }
-    const back_button_opacity_config = {
-      duration: 200,
-      toValue: 1,
-      easing: Easing.inOut(Easing.ease),
-      useNativeDriver: true
-    }
+  }
+  
+  const getMaterialList = async (item) => {
+    setLoading(true);           // start loading animation
 
-    // content
-    const content_translate_y_config = {
-      duration: 0,
-      toValue: 0,
-      easing: Easing.inOut(Easing.ease),
-      useNativeDriver: true
-    }
-    const content_opacity_config = {
-      duration: 200,
-      toValue: 1,
-      easing: Easing.inOut(Easing.ease),
-      useNativeDriver: true
-    }
+    const foodMaterial = await getMaterialInfo(item);
+    const materialName = await foodMaterial.RAWMTRL_NM;
+    var materialList = materialName.split(',');
 
-    // run animation
-    Animated.timing(input_box_translate_x, input_box_translate_x_config).start()
-    Animated.timing(back_button_opacity, back_button_opacity_config).start()
-    Animated.timing(content_translate_y, content_translate_y_config).start()
-    Animated.timing(content_opacity, content_opacity_config).start()
-    
-    //force force
-    // this.refs.inputRef.force();
-    inputRef.current.focus();
+    // make unique array of raw material DB
+    materialList = setArrayUnique(materialList);
+
+    console.log('setMaterialList');
+    console.log(item.product_num);
+    console.log(item.product_name);
+    console.log(materialList);
+
+    updateFoodData(item);
+
+    const veganList = await getVeganList(materialList);
+    // console.log(veganList);
+
+    const findVegan = await checkVegan(materialList, veganList);
+    console.log('------------------------------');
+    console.log('final');
+    // console.log(findVegan);
+
+    setLoading(false);          // finish loading animation
+
+    navigation.navigate('Material', {
+      routeName: 'Search Product',
+      barcode: item.barcode,
+      foodNum: item.product_num,
+      foodName: item.product_name,
+      materialList: materialList,
+      veganList: findVegan 
+    });
   }
 
-  const onBlur = () => {
-    // update state
-    setFocus(false);
+  
+  const updateFoodData = async (item) => {
+    await fetch('http://192.168.25.6:4444/product/update', {
+      method: 'post',
+      headers: {
+        'content-type' : 'application/json'
+      },
+      body: JSON.stringify({
+        barcode: item.barcode, 
+        foodNum: item.product_num,
+        foodName: item.product_name,
+      })
+    }).then((res) => res.json());
+  }
 
-    const input_box_translate_x_config = {
-      duration: 200,
-      toValue: width,
-      easing: Easing.inOut(Easing.ease),
-      useNativeDriver: true
-    }
-    const back_button_opacity_config = {
-      duration: 50,
-      toValue: 0,
-      easing: Easing.inOut(Easing.ease),
-      useNativeDriver: true
+  // select query by server
+  const getVeganList = async (materialList) => {
+    vegan = [];
+
+    for (i = 0; i < materialList.length; i++) {
+      try {
+        const response = await fetch('http://192.168.25.6:4444/check_vegan/find', {
+          method: 'post',
+          headers: {
+            'content-type': 'application/json'
+          },
+          body: JSON.stringify({
+            rawmatList: materialList[i]
+          })
+        }).then((res) => res.json());
+
+        // console.log(response);
+        vegan.push(response);
+        // console.log('1', vegan);
+      } catch (err) {
+        console.log(err);
+      }
     }
 
-    // content
-    const content_translate_y_config = {
-      duration: 0,
-      toValue: height,
-      easing: Easing.inOut(Easing.ease),
-      useNativeDriver: true
+    console.log(vegan);
+    return vegan;
+  }
+  
+  const checkVegan = async (materialList, veganList) => {
+    var isVegan = [];
+    var findVegan;
+
+    // there is no raw material info in DB
+    if (veganList.length == 0) {
+      for (i = 0; i < materialList.length; i++) {
+        isVegan.push([materialList[i], 0]);
+      }
     }
-    const content_opacity_config = {
-      duration: 200,
-      toValue: 0,
-      easing: Easing.inOut(Easing.ease),
-      useNativeDriver: true
+    // there is raw material info in DB
+    else {
+      for (i = 0; i < materialList.length; i++) {
+        for (j = 0; j < veganList.length; j++) {
+          if (materialList[i] == veganList[j].rawmat_name) {
+            findVegan = veganList[j].is_vegan;
+            // console.log('name in veganList');
+            break;
+          }
+          else {
+            findVegan = 0;
+            // console.log('no name in veganList');
+          }
+        }
+        isVegan.push([materialList[i], findVegan])
+      }
     }
 
-    // run animation
-    Animated.timing(input_box_translate_x, input_box_translate_x_config).start()
-    Animated.timing(back_button_opacity, back_button_opacity_config).start()
-    Animated.timing(content_translate_y, content_translate_y_config).start()
-    Animated.timing(content_opacity, content_opacity_config).start()
+    isVegan = setArrayUnique(isVegan);
+    console.log(isVegan.length);
+    console.log(isVegan);
 
-    //force blur
-    // this.refs.inputRef.blur();
-    inputRef.current.blur()
+    return isVegan;
+  }
+
+  const setArrayUnique = (array) => {
+    var uniques = [];
+    var itemsFound = {};
+
+    for(var i = 0, l = array.length; i < l; i++) {
+        var stringified = JSON.stringify(array[i]);
+        if(itemsFound[stringified]) { continue; }
+        uniques.push(array[i]);
+        itemsFound[stringified] = true;
+    }
+    return uniques;
   }
 
   return (
-    <>
-      {/* <SafeAreaView style={styles.header_safe_area}> */}
-      <View style={styles.header}>
-        <View style={styles.header_inner}>
+    <SafeAreaView style={{ flex: 1 }}>
 
-          <View>
-            <Image
-              source={require('../Images/Icon/barcode.png')}
-              style={{ width: 150, height: 40, resizeMode: 'contain' }}
+        {loading ? (
+          <View style={styles.loadingArea}>
+            <Animated.Image
+              source={require('../Images/Icon/loader_120px.png')}
+              style={{
+                alignItems: 'center',
+                justifyContent: 'center',
+                width: 50,
+                height: 50,
+                transform: [{ rotate: rotation }]
+              }}
             />
           </View>
-
-          <TouchableHighlight
-            activeOpacity={1}
-            underlayColor={'#ccd0d5'}
-            onPress={onFocus}
-            style={styles.search_icon_box}
-          >
-            <IonIcon name="search" size={30} />
-          </TouchableHighlight>
-
-          <Animated.View style={[styles.input_box, { translateX: input_box_translate_x }]}>
-            <Animated.View style={{ opacity: back_button_opacity }}>
-              <TouchableHighlight
-                activeOpacity={1}
-                underlayColor={'#ccd0d5'}
-                onPress={onBlur}
-                style={styles.back_icon_box}
-              >
-                <IonIcon name='chevron-back' size={30} />
-              </TouchableHighlight>
-            </Animated.View>
-
-            <View style={styles.inputArea}>
-              <TextInput
-                ref={inputRef}
-                placeholder='Search Product'
-                clearButtonMode='always'
-                value={keyword}
-                onChangeText={(value) => searchFilterFunction(value)}
-                // onChangeText={(text) => searchFilterFunction(text)}
-                style={styles.input}
-              />
-              <TouchableOpacity
-                style={styles.clearInputBtn}
-                onPress={() => setKeyword('')}
-                // onPress={() => searchFilterFunction('')}
-              >
-                <IonIcon name='close-circle-outline' size={30} />
-              </TouchableOpacity>
-            </View>
-
-          </Animated.View>
-
-        </View>
-      </View>
-      {/* </SafeAreaView> */}
-
-      <Animated.View style={[styles.content, { opacity: content_opacity, transform: [{ translateY: content_translate_y }] }]}>
-        <SafeAreaView style={styles.content_safe_area}>
-          <View style={styles.content_inner}>
-            <View style={styles.separator} />
-            {/* {keyword === ''
-              ? ( */}
-                <View>
-                  <FlatList
-                    data={filteredDataSource}
-                    keyExtractor={(item, index) => index.toString()}
-                    ItemSeparatorComponent={ItemSeparatorView}
-                    renderItem={ItemView}
-                  >
-                  </FlatList>
-                </View>
-              {/* ) : (
-                // keyword.
-            )} */}
-
-            {/* {keyword === ''
-              ? (
-                <View style={styles.image_placeholder_container}>
-                  <View style={{borderColor: 'green', borderWidth: 1, marginLeft: '-35%'}}>
-                    <Image
-                      stye={styles.image_placeholder}
-                      source={require('../Images/vegan_info.jpg')}
-                      resizeMode='center'
-                    />
-                  </View>
-                  <Text style={styles.image_placeholder_text}>
-                    Enter a few words{'\n'}
-                    to a search on Barcode
-                  </Text>
-                </View>
-              ) : (
-                <ScrollView>
-                  <View style={styles.search_item}>
-                    <IonIcon style={styles.item_icon} name="search" size={16} color="#ccc" />
-                    <Text>Fake result 1</Text>
-                  </View>
-                  <View style={styles.search_item}>
-                    <IonIcon style={styles.item_icon} name="search" size={16} color="#ccc" />
-                    <Text>Fake result 2</Text>
-                  </View>
-                  <View style={styles.search_item}>
-                    <IonIcon style={styles.item_icon} name="search" size={16} color="#ccc" />
-                    <Text>Fake result 3</Text>
-                  </View>
-                  <View style={styles.search_item}>
-                    <IonIcon style={styles.item_icon} name="search" size={16} color="#ccc" />
-                    <Text>Fake result 4</Text>
-                  </View>
-                </ScrollView>
-              )} */}
+        ) : (
+          <View style={styles.container}>
+            <CustomHeader title='' isHome={false} isSearch={true} navigation={navigation} />
+            <SearchBar
+              round
+              lightTheme
+              containerStyle={{ justifyContent: 'center' }}
+              // inputStyle={{height: 30}}
+              searchIcon={{ size: 24 }}
+              onChangeText={(text) => searchFilterFunction(text)}
+              onClear={(text) => searchFilterFunction('')}
+              placeholder="Search Product Name"
+              value={search}
+            />
+            <FlatList
+              data={filteredDataSource}
+              keyExtractor={(item, index) => index.toString()}
+              ItemSeparatorComponent={getItemSeparator}
+              renderItem={getItem}
+            />
           </View>
-        </SafeAreaView>
-      </Animated.View>
-
-    </>
-  )
-}
+        )}
+    </SafeAreaView>
+  );
+};
 
 const styles = StyleSheet.create({
-  header_safe_area: {
-    zIndex: 1000,
-    borderWidth: 1,
-    borderColor: 'black'
-  },
-  header: {
-    zIndex: 1000,
-    height: 50,
-    paddingHorizontal: 16,
-    borderWidth: 1,
-    borderColor: 'gray'
-  },
-  header_inner: {
-    flex: 1,
-    overflow: 'hidden',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    position: 'relative',
-    borderWidth: 1,
-    borderColor: 'green'
-  },
-  search_icon_box: {
-    width: 40,
-    height: 40,
-    borderRadius: 40,
-    backgroundColor: '#e4e6eb',
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderWidth: 1,
-    borderColor: 'gray'
-  },
-  input_box: {
-    height: 50,
-    flexDirection: 'row',
-    alignItems: 'center',
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    backgroundColor: 'white',
-    width: '100%',
-    // width: width - 32,
-    borderWidth: 1,
-    borderColor: 'blue'
-  },
-  back_icon_box: {
-    width: 40,
-    height: 40,
-    borderRadius: 40,
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginRight: 5,
-    borderWidth: 1,
-    borderColor: 'gray'
-  },
-  inputArea: {
-    flex: 1,
-    height: 40,
-    borderRadius: 16,
-    backgroundColor: '#e4e6eb',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  input: {
-    paddingHorizontal: 16,
-    fontSize: 15,
-    borderWidth: 1,
-    borderColor: 'blue'
-  },
-  clearInputBtn: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginTop: 5,
-    borderWidth: 1,
-    borderColor: 'blue'
-  },
-
-
-  content: {
-    width: width,
-    height: height,
-    position: 'absolute',
-    left: 0,
-    bottom: 0,
-    zIndex: 999,
-    borderWidth: 1,
-    borderColor: 'black'
-  },
-  content_safe_area: {
-    flex: 1,
-    backgroundColor: 'white',
-    borderWidth: 1,
-    borderColor: 'blue'
-  },
-  content_inner: {
-    flex: 1,
-    paddingTop: 50,
-    borderWidth: 1,
-    borderColor: 'red'
-  },
-  separator: {
-    marginTop: 5,
-    height: 1,
-    backgroundColor: '#e4e6eb',
-    // borderWidth: 1,
-    // borderColor: 'black'
-  },
-  image_placeholder_container: {
-    flex: 1,
-    flexDirection: 'column',
-    justifyContent: 'center',
-    // marginTop: '-50%',
-    borderWidth: 1,
-    borderColor: 'violet'
-  },
-  image_placeholder: {
-    width: '90%',
-    height: '50%',
-    alignSelf: 'center',
-    borderWidth: 1,
-    borderColor: 'green',
-  },
-  image_placeholder_text: {
-    textAlign: 'center',
-    color: 'gray',
-    marginTop: 5,
-    borderWidth: 1,
-    borderColor: 'red'
-  },
-  search_item: {
-    flexDirection: 'row',
-    height: 40,
-    alignItems: 'center',
-    borderBottomWidth: 1,
-    borderBottomColor: '#e6e4eb',
-    // paddingLeft: 16,
-    // borderWidth: 1,
-    // borderColor: 'red'
-  },
-  item_icon: {
-    marginHorizontal: 10,
-    // borderWidth: 1,
-    // borderColor: 'red'
-  },
-  itemText: {
-    fontSize: 14,
-    color: 'black',
-    // borderWidth: 1,
-    // borderColor: 'red',
-
-  },
-
-
-
-
-
-
   container: {
-    flexDirection: 'row',
-    height: 50,
+    backgroundColor: 'white',
+    // flexDirection: 'row',
   },
-  left: {
+  loadingArea: {
     flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  listName: {
+    padding: 10,
+    paddingLeft: 30,
     justifyContent: 'center',
+    fontSize: 17,
+    fontFamily: 'NanumSquareR'
   },
-  back: { 
-    width: 35, 
-    height: 35, 
-    resizeMode: 'contain',
-    marginHorizontal: 10,
-  },
-})
+  listNum: {
+    paddingBottom: 10,
+    paddingHorizontal: 20,
+    justifyContent: 'center',
+    color: 'silver',
+    fontSize: 12,
+    fontFamily: 'NanumSquareR',
+    // textAlign: 'center'
+  }
+});
+
+export default Search;

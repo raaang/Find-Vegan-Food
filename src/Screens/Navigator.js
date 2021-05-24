@@ -13,10 +13,10 @@ import BarcodeScreen from './BarcodeScreen';
 import ProductScreen from './ProductScreen';
 import MaterialScreen from './MaterialScreen';
 import SignUpScreen from './SignUpScreen';
-import SearchScreen from './SearchScreen';
 import VeganInfoScreen from './VeganInfoScreen';
-import Search from './Search';
+import SearchScreen from './SearchScreen';
 import Search2 from './Search2';
+import Search from './Search';
 import SaveScreen from './SaveScreen';
 
 function CustomDrawerContent(props) {
@@ -38,7 +38,7 @@ const StackSearch = createStackNavigator();
 function SearchStack() {
   return (
     <StackSearch.Navigator>
-      <StackSearch.Screen name='Search' component={Search} options={navOptionHandler} />
+      <StackSearch.Screen name='Search' component={SearchScreen} options={navOptionHandler} />
       <StackSearch.Screen name='Material' component={MaterialScreen} options={navOptionHandler} />
     </StackSearch.Navigator>
   )
@@ -52,7 +52,7 @@ function StartStack() {
       <StackStart.Screen name='Start' component={StartScreen} options={navOptionHandler} />
       <StackStart.Screen name='Login' component={LoginScreen} options={navOptionHandler} />
       <StackStart.Screen name='SignUp' component={SignUpScreen} options={navOptionHandler} />
-      <StackStart.Screen name='Search' component={Search} options={navOptionHandler} />
+      <StackStart.Screen name='Search' component={SearchScreen} options={navOptionHandler} />
     </StackStart.Navigator>
   )
 }
@@ -66,6 +66,17 @@ function BarcodeStack() {
       <StackBarcode.Screen name='Product' component={ProductScreen} options={navOptionHandler}/>
       <StackBarcode.Screen name='Material' component={MaterialScreen} options={navOptionHandler}/>
     </StackBarcode.Navigator>
+  )
+}
+
+const StackSave = createStackNavigator();
+
+function SaveStack() {
+  return (
+    <StackSave.Navigator initialRouteName='Save'>
+      <StackSave.Screen name='Save' component={SaveScreen} options={navOptionHandler} />
+      <StackSave.Screen name='Material' component={MaterialScreen} options={navOptionHandler} />
+    </StackSave.Navigator>
   )
 }
 
@@ -108,7 +119,7 @@ function TabNavigator() {
     >
       <Tab.Screen name='Vegan Info' component={VeganInfoScreen} />
       <Tab.Screen name='Barcode' component={BarcodeStack} />
-      <Tab.Screen name='Save' component={SaveScreen} />
+      <Tab.Screen name='Save' component={SaveStack} />
     </Tab.Navigator>
   )
 }

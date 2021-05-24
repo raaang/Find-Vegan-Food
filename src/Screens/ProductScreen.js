@@ -167,6 +167,7 @@ export default function ProductScreen({ route, navigation }) {
 
     navigation.navigate('Material', {
       routeName: 'Product',
+      barcode: barcodeValue.data,
       foodNum: foodNum,
       foodName: foodName,
       materialList: materialList,
@@ -269,14 +270,7 @@ export default function ProductScreen({ route, navigation }) {
     console.log('checkVegan');
     var isVegan = [];
     var findVegan;
-    // console.log(isVegan.length);
-    // console.log(isVegan);
-
-    // console.log(materialList);
-    // console.log(materialList.length);
-    // console.log(veganList);
-    // console.log(veganList.length);
-
+    
     // there is no raw material info in DB
     if (veganList.length == 0) {
       for (i = 0; i < materialList.length; i++) {
@@ -291,12 +285,8 @@ export default function ProductScreen({ route, navigation }) {
           if (materialList[i] == veganList[j].rawmat_name) {
             findVegan = veganList[j].is_vegan;
             // console.log('name in veganList');
+            // console.log('------------------------------');
             break;
-            // if (j != veganList.length - 1) {
-            //   console.log('break');
-            //   console.log('------------------------------');
-            //   break;
-            // }
           }
           else {
             findVegan = 0;
@@ -315,22 +305,6 @@ export default function ProductScreen({ route, navigation }) {
   }
 
   const setArrayUnique = (array) => {
-    
-    // const set = new Set(array);
-    // const uniqueArr = [...set];
-
-    // const uniqueArr = array.filter((element, idx) => {
-    //   return vegan.indexOf(element) === idx;
-    // });
-
-    // const uniqueArr = array.reduce((prev, now) => {
-    //   if (!prev.some(obj => obj[0] !== now[0] )) {
-    //     prev.push(now);
-    //     console.log('push');
-    //   }
-    //   return prev;
-    // }, []);
-
     var uniques = [];
     var itemsFound = {};
 

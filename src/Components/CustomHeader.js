@@ -19,34 +19,38 @@ export default function CustomHeader({ title, isHome, isSearch, navigation }) {
     <View style={styles.container}>
       {/* <SearchScreen /> */}
 
-      <View style={styles.left}>
-        {isHome ? (
+      {isHome ? (
+        <View style={styles.left}>
           <TouchableOpacity style={styles.menu} onPress={pressMenuHandler}>
             <IonIcon name="menu" size={30} />
           </TouchableOpacity>
-        ) : (
+        </View>
+      ) : (
+        <View style={styles.left}>
           <TouchableOpacity style={styles.back} onPress={pressBackHandler}>
             <IonIcon name='chevron-back' size={30} />
           </TouchableOpacity>
-        )}
-      </View>
+        </View>
+      )}
 
       <View style={styles.middle}>
         <Text style={{ textAlign: 'center' }}>{title}</Text>
       </View>
 
-      <View style={styles.right}>
-        {isSearch ? (
+      {isSearch ? (
+        <View style={styles.right}>
           <View>
 
           </View>
-        ) : (
+        </View>
+      ) : (
+        <View style={styles.right}>
           <TouchableOpacity style={styles.search} onPress={pressSearchHandler}>
             <IonIcon name="search" size={30} color="#000" />
           </TouchableOpacity>
-        )}
+        </View>
+      )}
       </View>
-    </View>
   )
 }
 

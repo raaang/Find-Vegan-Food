@@ -18,6 +18,7 @@ import SearchScreen from './SearchScreen';
 import Search2 from './Search2';
 import Search from './Search';
 import SaveScreen from './SaveScreen';
+import VeganRestaurantScreen from './VeganRestaurantScreen';
 
 function CustomDrawerContent(props) {
   return (
@@ -134,6 +135,7 @@ function DrawerNavigation() {
       <Drawer.Screen name='Login' component={StartStack} />
       <Drawer.Screen name='Vegan Information' component={VeganInfoScreen} />
       <Drawer.Screen name='Search Product' component={SearchStack} />
+      <Drawer.Screen name='Vegan Restaurant' component={VeganRestaurantScreen} />
     </Drawer.Navigator>
   )
 }

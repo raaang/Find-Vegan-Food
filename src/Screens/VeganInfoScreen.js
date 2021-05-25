@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { Image, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import CustomHeader from '../Components/CustomHeader';
 import { Picker } from '@react-native-picker/picker';
-import RNPickerSelect from 'react-native-picker-select';
 
 export default function VeganInfoScreen({ navigation }) {
   const veganName = ['Vegan', 'Lacto', 'Ovo', 'Lacto-ovo', 'Pasco', 'Pollo'];

@@ -2,7 +2,6 @@ const express = require('express')
 const app = express()
 const mysql = require("mysql");
 const bodyParser = require('body-parser');
-const { raw } = require('body-parser');
 const port = 4444     // react default=3000
 
 app.use(bodyParser.json({ type: 'application/json' }));

@@ -40,7 +40,7 @@ export default function SaveScreen({ navigation }) {
       .catch((error) => {
         console.log(error);
       });
-    }, 1000)
+    }, 5000)
 
     return () => clearInterval(interval)
   }, []);

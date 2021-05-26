@@ -18,7 +18,9 @@ import SearchScreen from './SearchScreen';
 import Search2 from './Search2';
 import Search from './Search';
 import SaveScreen from './SaveScreen';
-import VeganRestaurantScreen from './VeganRestaurantScreen';
+import VeganMapScreen from './VeganMapScreen';
+import { Tab } from 'react-native-elements/dist/tab/tab';
+import VeganMapListScreen from './VeganMapListScreen';
 
 function CustomDrawerContent(props) {
   return (
@@ -81,11 +83,11 @@ function SaveStack() {
   )
 }
 
-const Tab = createBottomTabNavigator();
+const TabMain = createBottomTabNavigator();
 
-function TabNavigator() {
+function MainTab() {
   return (
-    <Tab.Navigator
+    <TabMain.Navigator
       screenOptions={({ route }) => ({
         tabBarIcon: ({ focused, color, size }) => {
           let iconName;
@@ -118,10 +120,21 @@ function TabNavigator() {
         },
       }}
     >
-      <Tab.Screen name='Vegan Info' component={VeganInfoScreen} />
-      <Tab.Screen name='Barcode' component={BarcodeStack} />
-      <Tab.Screen name='Save' component={SaveStack} />
-    </Tab.Navigator>
+      <TabMain.Screen name='Vegan Info' component={VeganInfoScreen} />
+      <TabMain.Screen name='Barcode' component={BarcodeStack} />
+      <TabMain.Screen name='Save' component={SaveStack} />
+    </TabMain.Navigator>
+  )
+}
+
+const TabMap = createBottomTabNavigator();
+
+function MapTab() {
+  return (
+    <TabMap.Navigator>
+      <TabMap.Screen name='Map' component={VeganMapScreen} />
+      <TabMap.Screen name='Map List' component={VeganMapListScreen} />
+    </TabMap.Navigator>
   )
 }
 
@@ -131,11 +144,11 @@ function DrawerNavigation() {
   return (
     <Drawer.Navigator initialRouteName="MenuTab">
       {/* drawerContent={props => CustomDrawerContent(props)}> */}
-      <Drawer.Screen name='MenuTab' component={TabNavigator} />
+      <Drawer.Screen name='MenuTab' component={MainTab} />
       <Drawer.Screen name='Login' component={StartStack} />
       <Drawer.Screen name='Vegan Information' component={VeganInfoScreen} />
       <Drawer.Screen name='Search Product' component={SearchStack} />
-      <Drawer.Screen name='Vegan Restaurant' component={VeganRestaurantScreen} />
+      <Drawer.Screen name='Vegan Restaurant' component={MapTab} />
     </Drawer.Navigator>
   )
 }

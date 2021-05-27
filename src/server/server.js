@@ -94,7 +94,8 @@ app.post('/product/update', function (req, res) {
 })
 
 app.get('/save_product', function (req, res) {
-  connection.query('select * from save_product', function (err, rows) {
+  connection.query('select * from save_product order by save_time asc', 
+  function (err, rows) {
     if (err)
       console.log(err);
     else {
@@ -121,8 +122,9 @@ app.post('/save_product/find', function (req, res) {
 app.post('/save_product/insert', function (req, res) {
   const data = req.body;
   console.log(data);
-  connection.query('insert into save_product(barcode, product_num, product_name) values(?,?,?)',
-    [data.barcode, data.product_num, data.product_name], function (err, rows) {
+  connection.query(
+    'insert into save_product(barcode, product_num, product_name, is_vegan) values(?,?,?,?)',
+    [data.barcode, data.product_num, data.product_name, data.is_vegan], function (err, rows) {
       if (err)
         console.log(err);
       else {

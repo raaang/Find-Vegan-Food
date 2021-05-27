@@ -22,16 +22,6 @@ import VeganMapScreen from './VeganMapScreen';
 import { Tab } from 'react-native-elements/dist/tab/tab';
 import VeganMapListScreen from './VeganMapListScreen';
 
-function CustomDrawerContent(props) {
-  return (
-    <SafeAreaView style={{flex:1, backgroundColor: 'cornflowerblue'}}>
-      <ScrollView>
-        
-      </ScrollView>
-    </SafeAreaView>
-  )
-}
-
 const navOptionHandler = () => ({
   headerShown: false
 })
@@ -106,12 +96,18 @@ function MainTab() {
               : require('../Images/Icon/paper-clip.png')
           }
 
-          return <Image source={iconName} style={{ width: 25, height: 25 }} resizeMode='contain' />;
+          return (
+            <Image
+              source={iconName}
+              style={{width: 25, height: 25}}
+              resizeMode="contain"
+            />
+          );
         },
       })}
       swipeEnabled={true}
       tabBarOptions={{
-        activeTintColor: 'dodgerblue',
+        activeTintColor: 'mediumblue',
         inactiveTintColor: 'gray',
         showIcon: 'true',
         activeBackgroundColor: 'aliceblue',
@@ -131,26 +127,92 @@ const TabMap = createBottomTabNavigator();
 
 function MapTab() {
   return (
-    <TabMap.Navigator>
-      <TabMap.Screen name='Map' component={VeganMapScreen} />
-      <TabMap.Screen name='Map List' component={VeganMapListScreen} />
+    <TabMap.Navigator
+      screenOptions={({route}) => ({
+        tabBarIcon: ({focused, color, size}) => {
+          let iconName;
+
+          if (route.name === 'Map') {
+            iconName = focused
+              ? require('../Images/Icon/map_color.png')
+              : require('../Images/Icon/map.png');
+          } else {
+            iconName = focused
+              ? require('../Images/Icon/restaurant_blue.png')
+              : require('../Images/Icon/restaurant.png');
+          }
+
+          return (
+            <Image
+              source={iconName}
+              style={{width: 25, height: 25}}
+              resizeMode="contain"
+            />
+          );
+        },
+      })}
+      swipeEnabled={true}
+      tabBarOptions={{
+        activeTintColor: 'mediumblue',
+        inactiveTintColor: 'gray',
+        showIcon: 'true',
+        activeBackgroundColor: 'aliceblue',
+        indicatorStyle: {
+          backgroundColor: 'black',
+        },
+      }}
+     >
+      <TabMap.Screen name="Map" component={VeganMapScreen} />
+      <TabMap.Screen name="Map List" component={VeganMapListScreen} />
     </TabMap.Navigator>
-  )
+  );
 }
 
 const Drawer = createDrawerNavigator();
 
 function DrawerNavigation() {
   return (
-    <Drawer.Navigator initialRouteName="MenuTab">
+    <Drawer.Navigator
+      drawerContentOptions={{
+        itemStyle: { marginVertical: 5, paddingVertical: 5, paddingLeft: 4 }
+      }}
+      screenOptions={({route}) => ({
+        drawerIcon: ({focused, color, size}) => {
+          let iconName;
+
+          if (route.name === 'Home Page') {
+            iconName = focused
+              ? require('../Images/Icon/eco_house_color.png')
+              : require('../Images/Icon/eco_house_color.png')
+          }
+          else if (route.name === 'Vegan Restaurant Map') {
+            iconName = focused
+              ? require('../Images/Icon/map_color.png')
+              : require('../Images/Icon/map_color.png')
+          } else {
+            iconName = focused
+              ? require('../Images/Icon/loupe_color.png')
+              : require('../Images/Icon/loupe_color.png');
+          }
+
+          return (
+            <Image
+              source={iconName}
+              style={{width: 32, height: 32}}
+              resizeMode="contain"
+            />
+          );
+        },
+      })}
+    >
       {/* drawerContent={props => CustomDrawerContent(props)}> */}
-      <Drawer.Screen name='MenuTab' component={MainTab} />
-      <Drawer.Screen name='Login' component={StartStack} />
-      <Drawer.Screen name='Vegan Information' component={VeganInfoScreen} />
+      <Drawer.Screen name='Home Page' component={MainTab} />
+      {/* <Drawer.Screen name='Login' component={StartStack} /> */}
+      {/* <Drawer.Screen name='Vegan Information' component={VeganInfoScreen} /> */}
       <Drawer.Screen name='Search Product' component={SearchStack} />
-      <Drawer.Screen name='Vegan Restaurant' component={MapTab} />
+      <Drawer.Screen name='Vegan Restaurant Map' component={MapTab} />
     </Drawer.Navigator>
-  )
+  ) 
 }
 
 

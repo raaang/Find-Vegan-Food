@@ -94,11 +94,12 @@ export default function VeganInfoScreen({ navigation }) {
       <CustomHeader title="Vegan Info" isHome={true} navigation={navigation} />
       <View style={styles.container}>
 
-        <Text style={styles.title}>Choose Your Vegan Type</Text>
+        <Text style={styles.title}>Vegan Type</Text>
+        <Text></Text>
         
         {showVeganList}
 
-        <View style={styles.pickerArea}>
+        {/* <View style={styles.pickerArea}>
           <Picker
             mode='dialog'
             style={styles.picker}
@@ -108,7 +109,7 @@ export default function VeganInfoScreen({ navigation }) {
               <Picker.Item label={name} value={name} key={idx} />
             ))}
           </Picker>
-        </View>
+        </View> */}
 
       </View>
     </View>

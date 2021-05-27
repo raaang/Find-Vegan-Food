@@ -1,5 +1,16 @@
-import React, { useState } from 'react';
-import { Alert, Animated, Easing, FlatList, SafeAreaView, ScrollView, StatusBar, StyleSheet, Text, TouchableOpacity, useColorScheme, View } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import {
+  Alert,
+  Animated,
+  Easing,
+  Image,
+  SafeAreaView,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import { Colors } from 'react-native/Libraries/NewAppScreen';
 import CustomHeader from '../Components/CustomHeader';
 
@@ -13,6 +24,7 @@ export default function MaterialScreen({ route, navigation }) {
 
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState('');
+  const [isVegan, setIsVegan] = useState(false);
 
   var isSearch;
   if (routeName == 'Search Product')
@@ -27,14 +39,32 @@ export default function MaterialScreen({ route, navigation }) {
   console.log('veganList ', veganList);
   console.log('previousRouteName: ', routeName);
 
+  function findVegan(element)  {
+    if(element.is_vegan === 0)  {
+      return true;
+    }
+  }
+
+  useEffect(() => {
+    const checkVegan = veganList.find(findVegan);
+    console.log(checkVegan);
+    if (checkVegan) {
+      console.log('not vegan food');
+      setIsVegan(false);
+    } else {
+      console.log('vegan food');
+      setIsVegan(true);
+    }
+  }, []);
+  
   const showVeganList = veganList.map(
     (raw, idx) => {
       return (
         <View key={idx}>
           <View style={styles.materialArea}>
-            <Text style={styles.materialText}>{raw[0]}</Text>
+            <Text style={styles.materialText}>{raw.name}</Text>
             {/* <Text style={styles.materialText}>{raw[1]}</Text> */}
-            {raw[1] ? (
+            {raw.is_vegan ? (
               <TouchableOpacity style={styles.veganArea}>
                 <Text style={styles.veganText}>Vegan</Text>
               </TouchableOpacity>
@@ -49,21 +79,16 @@ export default function MaterialScreen({ route, navigation }) {
     }
   )
   
-  // status bar
-  const isDarkMode = useColorScheme() === 'dark';
-
-  // const backgroundStyle = {
-  //   backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
-  // };
   
-
   const pressTitleHandler = () => {
-    Alert.alert('Alert', 'Do you want to save this product?',
-      [
-        {text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
-        {text: 'OK', onPress: pressOkHandler},
-      ]
-    )
+    if (routeName != 'Save') {
+      Alert.alert('Alert', 'Do you want to save this product?',
+        [
+          {text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
+          {text: 'OK', onPress: pressOkHandler},
+        ]
+      )
+    }
   }
 
   const pressOkHandler = async () => {
@@ -77,7 +102,8 @@ export default function MaterialScreen({ route, navigation }) {
       insertSaveData();
       console.log('insert')
     } else {
-      console.log('already have data');
+      alert('Already Saved This Product');
+      console.log('already saved this product');
     }
 
     setLoading(false);
@@ -113,7 +139,8 @@ export default function MaterialScreen({ route, navigation }) {
       body: JSON.stringify({
         barcode: barcode,
         product_num: foodNum,
-        product_name: foodName
+        product_name: foodName,
+        is_vegan: isVegan
       })
     }).then((res) => res.json());
   }
@@ -138,9 +165,9 @@ export default function MaterialScreen({ route, navigation }) {
 
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
+    <SafeAreaView style={{flex: 1}}>
       {isSearch}
-      
+
       {loading ? (
         <View style={styles.container}>
           <Animated.Image
@@ -150,28 +177,65 @@ export default function MaterialScreen({ route, navigation }) {
               justifyContent: 'center',
               width: 50,
               height: 50,
-              transform: [{ rotate: rotation }]
+              transform: [{rotate: rotation}],
             }}
           />
         </View>
       ) : (
         <View style={styles.container}>
-          <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
-
-          <TouchableOpacity style={styles.titleArea} onPress={pressTitleHandler}>
+          <TouchableOpacity
+            style={styles.titleArea}
+            onPress={pressTitleHandler}>
             <Text style={styles.titleText}>{foodName}</Text>
-            <View style={styles.foodNumArea}>
-              <Text style={styles.foodNumText}>Product No. {foodNum}</Text>
-            </View>
+            {isVegan ? (
+              <View style={styles.imageArea}>
+                <Image 
+                  style={{ height: 50, width: 50, resizeMode: 'contain', marginTop: 10 }}
+                  source={require('../Images/Icon/vegan_flag_color.png')}
+                />
+                <Text
+                  style={{
+                    color: 'green',
+                    fontSize: 18,
+                    fontWeight: 'bold',
+                    fontFamily: 'NanumSquareR',
+                    marginTop: 10,
+                  }}
+                >
+                  Vegan
+                </Text>
+              </View>
+            ) : (
+              <View style={styles.imageArea}>
+                <Image
+                  style={{ height: 50, width: 50, resizeMode: 'contain', marginTop: 10 }}
+                  source={require('../Images/Icon/vegan_non.png')}
+                />
+                <Text
+                  style={{
+                    color: 'firebrick',
+                    fontSize: 18,
+                    fontWeight: 'bold',
+                    fontFamily: 'NanumSquareR',
+                    marginTop: 10,
+                  }}
+                >
+                  Non-Vegan
+                </Text>
+              </View>
+            )}
           </TouchableOpacity>
+          {/* {showVegan} */}
 
-          <ScrollView style={styles.listArea}>
-            {showVeganList}
-          </ScrollView>
+          {/* <View>
+            <Text>If you want to save this product, Click the Name</Text>
+          </View> */}
+
+          <ScrollView style={styles.listArea}>{showVeganList}</ScrollView>
         </View>
       )}
     </SafeAreaView>
-  )
+  );
 }
 
 const styles = StyleSheet.create({
@@ -185,11 +249,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     width: '100%',
-    height: '10%',
-    marginVertical: 10,
+    // height: '10%',
+    // marginVertical: 10,
     padding: 10,
-    borderWidth: 1,
-    borderColor: 'gray',
+    borderBottomWidth: 1,
+    borderColor: '#C8C8C8',
     backgroundColor: 'aliceblue'
   },
   titleText: {
@@ -212,6 +276,11 @@ const styles = StyleSheet.create({
     fontFamily: 'NanumSquareR'
   },
 
+  imageArea: {
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+
   listArea: {
     width: '100%',
   },
@@ -223,7 +292,7 @@ const styles = StyleSheet.create({
     padding: 15,
     paddingLeft: 20,
     // borderWidth: 1,
-    borderColor: 'gray',
+    borderColor: '#C8C8C8',
     borderBottomWidth: 1,
   },
   materialText: {

@@ -15,8 +15,9 @@ export default function BarcodeScreen({ navigation }) {
     setBarcodeValue(barcodeValue);
 
     alert(
-      'Barcode type : ' + barcodeValue.type + '\n' +
-      'Barcode value : ' + barcodeValue.data,
+      // 'Barcode type : ' + barcodeValue.type + '\n' +
+      // 'Barcode value : ' + barcodeValue.data,
+      'Barcode Scan Success'
     );
 
     //여기서 api로 연결해야하나?
@@ -46,7 +47,7 @@ export default function BarcodeScreen({ navigation }) {
           }
         } catch (err) {
           alert('Camera permission err', err);
-          console.warn(err);
+          // console.warn(err);
         }
       }
       // Calling the camera permission function

@@ -1,10 +1,6 @@
-import React, {useEffect, useState} from 'react';
-import {
-  Image,
-  StyleSheet,
-  View,
-} from 'react-native';
-import MapView, {Marker, PROVIDER_GOOGLE} from 'react-native-maps';
+import React, { useEffect, useState } from 'react';
+import { Image, StyleSheet, View } from 'react-native';
+import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 import CustomHeader from '../Components/CustomHeader';
 import veganRestaurant from '../서울시 지정·인증업소 현황.json';
 import Geocode from 'react-geocode';
@@ -14,11 +10,52 @@ Geocode.setLanguage('ko');
 // Geocode.setRegion('es');
 Geocode.enableDebug();
 
-export default function VeganMapScreen({navigation}) {
+export default function VeganMapScreen({ route, navigation }) {
   console.log('==============================');
   const restList = veganRestaurant.DATA;
-  const veganRest = [];
+  var veganRest = [];
   const [geo, setGeo] = useState([]);
+  const [latitude, setLatitude] = useState(37.566353);
+  const [longitude, setLongitude] = useState(126.977953);
+
+  // var latitude = 37.566353;         // 위도
+  // var longitude = 126.977953;       // 경도
+
+  console.log(latitude);
+  console.log(longitude);
+
+  useEffect(() => {
+    try {
+      console.log('----------------------------');
+      var { latlng } = route.params;
+      console.log(latlng.lat);
+      console.log(latlng.lng);
+
+      if (latlng != '') {
+        setLatitude(latlng.lat);
+        setLongitude(latlng.lng);
+      }
+
+    } catch (err) {
+      console.log(err);
+    }
+  }, []);
+  
+  console.log(latitude);
+  console.log(longitude);
+  
+  const setArrayUnique = (array) => {
+    var uniques = [];
+    var itemsFound = {};
+
+    for(var i = 0, l = array.length; i < l; i++) {
+        var stringified = JSON.stringify(array[i]);
+        if(itemsFound[stringified]) { continue; }
+        uniques.push(array[i]);
+        itemsFound[stringified] = true;
+    }
+    return uniques;
+  }
 
   // find vegan restaurant name, address
   restList.map((rest, idx) => {
@@ -46,11 +83,12 @@ export default function VeganMapScreen({navigation}) {
 
   // console.log(veganRest);
   console.log(veganRest.length);
+  veganRest = setArrayUnique(veganRest);
+  console.log(veganRest.length);
   console.log('----------------------------');
 
   const getGeocode = async address => {
     // console.log('getGeocode: ', address);
-
     try {
       const response = await Geocode.fromAddress(address);
       const result = await response.results;
@@ -61,21 +99,21 @@ export default function VeganMapScreen({navigation}) {
     }
   };
 
-  const getCode = async () => {
+  const getLatLng = async () => {
     const geoList = [];
-
     var i;
+
     for (i = 0; i < veganRest.length; i++) {
       // console.log(i);
       const {lat, lng} = await getGeocode(veganRest[i].rest_addr);
-      console.log({lat, lng});
+      // console.log({lat, lng});
       geoList.push({lat, lng});
     }
     setGeo(geoList);
   };
 
   useEffect(() => {
-    getCode();
+    getLatLng();
   }, []);
 
   console.log('geoList');
@@ -89,7 +127,10 @@ export default function VeganMapScreen({navigation}) {
         coordinate={{
           latitude: g.lat,
           longitude: g.lng,
-        }}>
+        }}
+        title={veganRest[idx].rest_name}
+        description={veganRest[idx].rest_addr}
+      >
         <Image
           style={{height: 30, width: 30}}
           source={require('../Images/Icon/placeholder_yellow.png')}
@@ -106,25 +147,12 @@ export default function VeganMapScreen({navigation}) {
         style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}
         provider={PROVIDER_GOOGLE}
         initialRegion={{
-          latitude: 37.566353, // 위도
-          longitude: 126.977953, // 경도
+          latitude: latitude, // 위도
+          longitude: longitude, // 경도
           latitudeDelta: 0.03,
           longitudeDelta: 0.03,
         }}>
-        <Marker
-          coordinate={{
-            latitude: 37.566353,
-            longitude: 126.977953,
-          }}
-          title="서울시청"
-          description="find seoul">
-          <Image
-            style={{height: 30, width: 30}}
-            source={require('../Images/Icon/placeholder_yellow.png')}
-          />
-        </Marker>
         {showGeoList}
-
       </MapView>
     </View>
   );

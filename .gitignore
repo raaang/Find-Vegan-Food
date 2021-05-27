@@ -61,3 +61,7 @@ buck-out/
 
 # database
 /config/database.js
+
+# google api
+/src/Screens/VeganMapScreen.js
+/src/Screens/VeganMapListScreen.js

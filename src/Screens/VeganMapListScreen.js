@@ -1,5 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { Animated, Easing, FlatList, Image, SafeAreaView, ScrollView, StatusBar, StyleSheet, Text, TouchableOpacity, useColorScheme, View } from 'react-native';
+import {
+  FlatList,
+  SafeAreaView,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import CustomHeader from '../Components/CustomHeader';
 import veganRestaurant from '../서울시 지정·인증업소 현황.json';
 import Geocode from 'react-geocode';
@@ -9,44 +17,26 @@ Geocode.setLanguage('ko');
 // Geocode.setRegion('es');
 Geocode.enableDebug();
 
-export default function VeganMapListScreen({navigation}) {
+export default function VeganMapListScreen({ navigation }) {
   console.log('==============================');
   const restList = veganRestaurant.DATA;
   var veganRest = [];
   const [geo, setGeo] = useState([]);
 
-  const [loading, setLoading] = useState(false);
-
-  // loading animation
-  const animatedRotation = new Animated.Value(0);
-
-  const rotation = animatedRotation.interpolate({
-    inputRange: [0, 1],
-    outputRange: ['0deg', '360deg']
-  })
-
-  if (loading) {
-    Animated.loop(
-      Animated.timing(animatedRotation, {
-        toValue: 1,
-        easing: Easing.linear,
-        useNativeDriver: true
-      })
-    ).start()
-  }
-
-  const setArrayUnique = (array) => {
+  const setArrayUnique = array => {
     var uniques = [];
     var itemsFound = {};
 
-    for(var i = 0, l = array.length; i < l; i++) {
-        var stringified = JSON.stringify(array[i]);
-        if(itemsFound[stringified]) { continue; }
-        uniques.push(array[i]);
-        itemsFound[stringified] = true;
+    for (var i = 0, l = array.length; i < l; i++) {
+      var stringified = JSON.stringify(array[i]);
+      if (itemsFound[stringified]) {
+        continue;
+      }
+      uniques.push(array[i]);
+      itemsFound[stringified] = true;
     }
     return uniques;
-  }
+  };
 
   // find vegan restaurant name, address
   restList.map((rest, idx) => {
@@ -71,10 +61,10 @@ export default function VeganMapListScreen({navigation}) {
   console.log(veganRest.length);
   veganRest = setArrayUnique(veganRest);
   console.log(veganRest.length);
-  
+
   console.log('----------------------------');
 
-  const getGeocode = async address => {
+  const getGeocode = async (address) => {
     // console.log('getGeocode: ', address);
 
     try {
@@ -87,7 +77,7 @@ export default function VeganMapListScreen({navigation}) {
     }
   };
 
-  const getCode = async () => {
+  const getLatLng = async () => {
     const geoList = [];
 
     var i;
@@ -100,11 +90,9 @@ export default function VeganMapListScreen({navigation}) {
     setGeo(geoList);
   };
 
-  useEffect(() => {
-    setLoading(true);
-    getCode();
-    setLoading(false);
-  }, []);
+  // useEffect(() => {
+  //   getGeocode();
+  // }, []);
 
   console.log('geoList');
   console.log(geo);
@@ -115,9 +103,11 @@ export default function VeganMapListScreen({navigation}) {
     console.log(item);
     return (
       // Flat List Item
-      <TouchableOpacity onPress={() => getMaterialList(item)}>
-        <Text style={styles.listName}>{item.rest_name}</Text>
-        <Text style={styles.listAddr}>{item.rest_addr}</Text>
+      <TouchableOpacity onPress={() => pressListHandler(item)}>
+        <View style={styles.listArea}>
+          <Text style={styles.listName}>{item.rest_name}</Text>
+          <Text style={styles.listAddr}>{item.rest_addr}</Text>
+        </View>
       </TouchableOpacity>
     );
   };
@@ -131,61 +121,55 @@ export default function VeganMapListScreen({navigation}) {
           height: 0.5,
           width: '100%',
           backgroundColor: '#C8C8C8',
-          flexDirection: 'row'
+          flexDirection: 'row',
         }}
       />
     );
   };
 
-  const showRestList = veganRest.map(
-    (rest, idx) => {
-      return (
-        <View key={idx}>
-          <View style={styles.listArea}>
-            <Text style={styles.listName}>{rest.rest_name}</Text>
-            <Text style={styles.listAddr}>{rest.rest_addr}</Text>
-          </View>
-        </View>
-      );
-    }
-  )
+  const pressListHandler = async (item) => {
+    console.log(item);
+    const {lat, lng} = await getGeocode(item.rest_addr);
+    console.log({lat, lng});
+
+    navigation.navigate('Map', {
+      latlng: {lat, lng}
+    })
+  }
+
+
+  // const showVeganMapList = veganRest.map(
+  //   (raw, idx) => {
+  //     return (
+  //       <View key={idx}>
+  //         <TouchableOpacity onPress={() => pressListHandler(raw, idx)}>
+  //           <View style={styles.listArea}>
+  //             <Text style={styles.listName}>{raw.rest_name}</Text>
+  //             <Text style={styles.listAddr}>{raw.rest_addr}</Text>
+  //           </View>
+  //         </TouchableOpacity>
+  //       </View>
+  //     );
+  //   }
+  // )
   
-
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={{ flex : 1 }}>
+      <View style={styles.container}>
+        {/* <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} /> */}
+        <CustomHeader title="Vegan Restaurant List" isHome={true} navigation={navigation} />
 
-      {loading ? (
-        <View style={styles.loadingArea}>
-          <Animated.Image
-            source={require('../Images/Icon/loader_120px.png')}
-            style={{
-              alignItems: 'center',
-              justifyContent: 'center',
-              width: 50,
-              height: 50,
-              transform: [{ rotate: rotation }]
-            }}
-          />
-        </View>
-      ) : (
-        <View>
-          {/* <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} /> */}
-          <CustomHeader title="Vegan Restaurant List" isHome={true} navigation={navigation} />
-
-          {/* <ScrollView>
-            {showRestList}
-          </ScrollView> */}
-
-          <FlatList
-            data={veganRest}
-            keyExtractor={(item, index) => index.toString()}
-            ItemSeparatorComponent={getItemSeparator}
-            renderItem={getItem}
-          />
-        </View>
-      )}
+        <FlatList
+          data={veganRest}
+          keyExtractor={(item, index) => index.toString()}
+          ItemSeparatorComponent={getItemSeparator}
+          renderItem={(item, idx) => getItem(item)}
+        />
+        
+        {/* <ScrollView>{showVeganMapList}</ScrollView> */}
+      </View>
     </SafeAreaView>
-  )
+  );
 }
 
 const styles = StyleSheet.create({
@@ -197,24 +181,29 @@ const styles = StyleSheet.create({
 
   listArea: {
     width: '100%',
-    borderBottomWidth: 0.5,
-    borderColor: 'gray'
+    paddingHorizontal: 20,
+    // height: 80,
+    // borderBottomWidth: 0.5,
+    // borderColor: '#C8C8C8'
   },
   listName: {
-    padding: 10,
-    paddingLeft: 30,
+    margin: 10,
+    marginLeft: 10,
+    alignSelf: 'flex-start',
     justifyContent: 'center',
+    color: 'dodgerblue',
     fontSize: 22,
     fontWeight: 'bold',
     fontFamily: 'NanumSquareR',
   },
   listAddr: {
-    paddingBottom: 10,
-    paddingHorizontal: 20,
+    marginBottom: 10,
+    alignSelf: 'flex-start',
     justifyContent: 'center',
-    color: 'silver',
+    color: 'black',
     fontSize: 12,
     fontFamily: 'NanumSquareR',
     // textAlign: 'center'
-  }
+  },
+  
 })

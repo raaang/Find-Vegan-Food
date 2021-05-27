@@ -245,7 +245,7 @@ const Search = ({ navigation }) => {
             // console.log('no name in veganList');
           }
         }
-        isVegan.push([materialList[i], findVegan])
+        isVegan.push({'name': materialList[i], 'is_vegan': findVegan})
       }
     }
 

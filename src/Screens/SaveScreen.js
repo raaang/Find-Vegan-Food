@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Animated, Easing, FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Animated, Easing, FlatList, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import CustomHeader from '../Components/CustomHeader';
 
@@ -40,42 +40,10 @@ export default function SaveScreen({ navigation }) {
       .catch((error) => {
         console.log(error);
       });
-    }, 5000)
+    }, 1000)
 
     return () => clearInterval(interval)
   }, []);
-
-
-  const getItem = ({ item }) => {
-    console.log('getItem');
-    console.log(item);
-    return (
-      // Flat List Item
-      <TouchableOpacity style={{ height: 100, paddingLeft: 15}} onPress={() => getMaterialList(item)}>
-      {/* <TouchableOpacity> */}
-        <Text style={styles.listName}>{item.product_name}</Text>
-        <Text style={styles.listNum}>Barcode No.{item.barcode}</Text>
-          {/* {' / '} */}
-        <Text style={styles.listNum}>Product No.{item.product_num}</Text>
-      </TouchableOpacity>
-    );
-  };
-
-  const getItemSeparator = () => {
-    console.log('getItemSeparator');
-    return (
-      // Flat List Item Separator
-      <View
-        style={{
-          height: 0.5,
-          width: '100%',
-          backgroundColor: '#C8C8C8',
-          flexDirection: 'row'
-        }}
-      />
-    );
-  };
-  
 
   const getMaterialInfo = async (item) => {
     console.log('----------------------------------');
@@ -133,7 +101,7 @@ export default function SaveScreen({ navigation }) {
     setLoading(false);          // finish loading animation
 
     navigation.navigate('Material', {
-      routeName: 'Search Product',
+      routeName: 'Save',
       barcode: item.barcode,
       foodNum: item.product_num,
       foodName: item.product_name,
@@ -209,7 +177,7 @@ export default function SaveScreen({ navigation }) {
             // console.log('no name in veganList');
           }
         }
-        isVegan.push([materialList[i], findVegan])
+        isVegan.push({'name': materialList[i], 'is_vegan': findVegan})
       }
     }
 
@@ -233,6 +201,77 @@ export default function SaveScreen({ navigation }) {
     return uniques;
   }
 
+
+  const getItem = ({ item }) => {
+    console.log('getItem');
+    console.log(item);
+    return (
+      // Flat List Item
+      <TouchableOpacity 
+        style={{ paddingHorizontal: 20 }} 
+        onPress={() => getMaterialList(item)}
+      >
+        <View style={styles.listArea}>
+          <View style={styles.textArea}>
+            <Text style={styles.listName}>{item.product_name}</Text>
+            <Text style={styles.listNum}>Barcode No.{item.barcode}</Text>
+            <Text style={styles.listNum}>Product No.{item.product_num}</Text>
+          </View>
+          {item.is_vegan ? (
+            <View style={[styles.imageArea, {marginRight: 40}]}>
+              <Image 
+                style={{ height: 50, width: 50, resizeMode: 'contain' }}
+                source={require('../Images/Icon/vegan_flag_color.png')}
+              />
+              <Text
+                style={{
+                  color: 'green',
+                  fontSize: 18,
+                  fontFamily: 'NanumSquareR',
+                  marginTop: 10,
+                }}
+              >
+                Vegan
+              </Text>
+            </View>
+            ) : (
+            <View style={styles.imageArea}>
+              <Image
+                style={{ height: 50, width: 50, resizeMode: 'contain' }}
+                source={require('../Images/Icon/vegan_non.png')}
+              />
+              <Text
+                style={{
+                  color: 'firebrick',
+                  fontSize: 18,
+                  fontFamily: 'NanumSquareR',
+                  marginTop: 10,
+                }}
+              >
+                Non-Vegan
+              </Text>
+            </View>
+          )}
+        </View>
+      </TouchableOpacity>
+    );
+  };
+
+  const getItemSeparator = () => {
+    console.log('getItemSeparator');
+    return (
+      // Flat List Item Separator
+      <View
+        style={{
+          height: 0.5,
+          width: '100%',
+          backgroundColor: '#C8C8C8',
+          flexDirection: 'row'
+        }}
+      />
+    );
+  };
+  
 
   return (
     <View style={styles.container}>
@@ -274,22 +313,35 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center'
   },
+  
+  listArea: {
+    flexDirection: 'row',
+    justifyContent: 'space-between'
+  },
+  textArea: {
+    marginLeft: 20,
+  },
   listName: {
-    padding: 10,
-    paddingLeft: 30,
+    margin: 10,
+    alignSelf: 'center',
     justifyContent: 'center',
+    color: 'dodgerblue',
     fontSize: 22,
     fontWeight: 'bold',
-    fontFamily: 'NanumSquareR',
+    fontFamily: 'NanumSquareR'
   },
   listNum: {
-    paddingBottom: 10,
-    paddingHorizontal: 20,
+    marginBottom: 10,
     justifyContent: 'center',
     color: 'silver',
     fontSize: 12,
     fontFamily: 'NanumSquareR',
     // textAlign: 'center'
+  },
+  
+  imageArea: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: 20
   }
-
 })

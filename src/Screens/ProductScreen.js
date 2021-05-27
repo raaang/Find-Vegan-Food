@@ -1,12 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Animated, Button, Easing, FlatList, SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import CustomHeader from '../Components/CustomHeader';
 
 export default function ProductScreen({ route, navigation }) {
-  // const barcodeValue = navigation.getParam('barcodeValue');
-  // const barcodeValue = JSON.stringify(barcodeValue);
   const { barcodeValue } = route.params;
-  console.log(barcodeValue);
   const apiKey = '85e2be4bc56846348d50';
 
   const [foodNum, setFoodNum] = useState('');
@@ -17,8 +14,6 @@ export default function ProductScreen({ route, navigation }) {
   
   var vegan = [];
   var i, j;
-
-  console.log('==============================');
 
   // loading animation
   const animatedRotation = new Animated.Value(0);
@@ -38,37 +33,17 @@ export default function ProductScreen({ route, navigation }) {
     ).start()
   }
 
-  const [food, setFood] = useState([]);
-  const [material, setMaterial] = useState([]);
+  const animatedFadeIn = useRef(new Animated.Value(0)).current;
 
-  // useEffect(() => {
-  //   fetch('http://openapi.foodsafetykorea.go.kr/api/' + apiKey +
-  //   '/C005/json/1/5/BAR_CD=' + barcodeValue.data
-  //   ).then((response) => response.json())
-  //   .then((responseJson) => {
-  //     const foodList = responseJson.C005.row;
-  //     setFood(foodList[foodList.length - 1]);
-  //   })
-  //   .catch((error) => {
-  //     console.error(error);
-  //   })
-  // }, []);
+  const fadeIn = () => {
+    Animated.timing(animatedFadeIn, {
+      toValue: 1,
+      duration: 500,
+      useNativeDriver: true
+    }).start()
+  }
 
-  // setFoodNum(food.PRDLST_REPORT_NO);
-  // setFoodName(food.PRDLST_NM);
-
-  // useEffect(() => {
-  //   fetch('http://openapi.foodsafetykorea.go.kr/api/' + apiKey +
-  //   '/C002/json/1/5/PRDLST_REPORT_NO=' + foodNumber
-  //   ).then((response) => response.json())
-  //   .then((responseJson) => {
-  //     const materialList = responseJson.C002.row;
-  //     setMaterial(materialList[materialList.length - 1]);
-  //   })
-  //   .catch((error) => {
-  //     console.log(error);
-  //   })
-  // }, []);
+  console.log('==============================');
 
   const getFoodInfo = async () => {
     const response = await fetch(
@@ -87,10 +62,12 @@ export default function ProductScreen({ route, navigation }) {
           return food[food.length - 1];
         } else {
           alert('Can\'t find product');
+          navigation.goBack();
           return ;
         }
       } catch (err) {
-        console.warn(err);
+        console.log(err);
+        // console.warn(err);
       }
     } else {
       return ;
@@ -113,11 +90,14 @@ export default function ProductScreen({ route, navigation }) {
 
           return material[material.length - 1];
         } else {
+          setLoading(false); 
           alert('Can\'t find product material');
+          navigation.goBack();
           return ;
         }
       } catch (err) {
-        console.warn(err);
+        console.log(err);
+        // console.warn(err);
       }
     } else {
       return ;
@@ -130,14 +110,26 @@ export default function ProductScreen({ route, navigation }) {
     setFoodName(foodInfo.PRDLST_NM);
 
     selectFoodData();
+    fadeIn();
   }
 
   const getMaterialList = async () => {
     setLoading(true);           // start loading animation
 
     const foodMaterial = await getMaterialInfo(foodNum);
-    const materialName = await foodMaterial.RAWMTRL_NM;
-    var materialList = materialName.split(',');
+    try {
+      if (foodMaterial) {
+        const materialName = await foodMaterial.RAWMTRL_NM;
+        var materialList = materialName.split(',');
+      } else {
+        setLoading(false); 
+        alert('Can\'t find product material');
+        navigation.goBack();
+        return ;
+      }
+    } catch (err) {
+      console.log(err);
+    }
     
     // make unique array of raw material DB
     materialList = setArrayUnique(materialList);
@@ -156,12 +148,9 @@ export default function ProductScreen({ route, navigation }) {
     }
 
     const veganList = await getVeganList(materialList);
-    // console.log(veganList);
-
     const findVegan = await checkVegan(materialList, veganList);
     console.log('------------------------------');
     console.log('final');
-    // console.log(findVegan);
 
     setLoading(false);          // finish loading animation
 
@@ -179,7 +168,6 @@ export default function ProductScreen({ route, navigation }) {
   const selectAllFoodData = async () => {
     const response = await fetch('http://192.168.25.6:4444/product');
     const responseJson = await response.json();
-    // setData(responseJson);
     console.log(responseJson);
   }
 
@@ -195,7 +183,6 @@ export default function ProductScreen({ route, navigation }) {
       })
     }).then((res) => res.json());
     setData(response);
-    // console.log(data);
   }
 
   // insert query by server
@@ -240,7 +227,6 @@ export default function ProductScreen({ route, navigation }) {
     console.log('vegan', vegan);
 
     for (i = 0; i < materialList.length; i++) {
-      // console.log(materialList[i]);
       console.log('------------------------------');
       try {
         const response = await fetch('http://192.168.25.6:4444/check_vegan/find', {
@@ -252,10 +238,7 @@ export default function ProductScreen({ route, navigation }) {
             rawmatList: materialList[i]
           })
         }).then((res) => res.json());
-
-        // console.log(response);
         vegan.push(response);
-        // console.log('1', vegan);
       } catch (err) {
         console.log(err);
       }
@@ -281,21 +264,15 @@ export default function ProductScreen({ route, navigation }) {
     else {
       for (i = 0; i < materialList.length; i++) {
         for (j = 0; j < veganList.length; j++) {
-          // console.log(i, j);
           if (materialList[i] == veganList[j].rawmat_name) {
             findVegan = veganList[j].is_vegan;
-            // console.log('name in veganList');
-            // console.log('------------------------------');
             break;
           }
           else {
             findVegan = 0;
-            // console.log('no name in veganList');
           }
         }
-        isVegan.push([materialList[i], findVegan])
-        // console.log(isVegan);
-        // console.log('------------------------------');
+        isVegan.push({'name': materialList[i], 'is_vegan': findVegan})
       }
     }
 
@@ -319,8 +296,8 @@ export default function ProductScreen({ route, navigation }) {
 
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
-      <CustomHeader title='Product' isHome={false} navigation={navigation} />
+    <SafeAreaView style={{flex: 1}}>
+      <CustomHeader title="Product" isHome={false} navigation={navigation} />
       {loading ? (
         <View style={styles.container}>
           <Animated.Image
@@ -330,40 +307,40 @@ export default function ProductScreen({ route, navigation }) {
               justifyContent: 'center',
               width: 50,
               height: 50,
-              transform: [{ rotate: rotation }]
+              transform: [{rotate: rotation}],
             }}
           />
         </View>
       ) : (
         <View style={styles.container}>
-          <Text style={styles.titleText}>Barcode: {barcodeValue.data}</Text>
-          <Text style={styles.titleText}>{foodName}</Text>
-          <Text></Text>
-
-          <TouchableOpacity
-            style={styles.btnArea}
-            onPress={getFoodName}
+          <Animated.View
+            style={[styles.titleArea, {
+              opacity: animatedFadeIn,
+            }]}
           >
+            <Text style={styles.titleText}>{foodName}</Text>
+          </Animated.View>
+
+          {/* <Text></Text> */}
+
+          <TouchableOpacity style={styles.btnArea} onPress={getFoodName}>
             <Text style={styles.btnText}>Show Product Name</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity
-            style={styles.btnArea}
-            onPress={getMaterialList}
-          >
+          <TouchableOpacity style={styles.btnArea} onPress={getMaterialList}>
             <Text style={styles.btnText}>Show Material</Text>
           </TouchableOpacity>
         </View>
       )}
     </SafeAreaView>
-  )
+  );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
-    justifyContent: 'center'
+    justifyContent: 'center',
   },
 
   btnArea: {
@@ -385,12 +362,9 @@ const styles = StyleSheet.create({
   titleArea: {
     alignItems: 'center',
     justifyContent: 'center',
-    width: '100%',
-    height: 50,
-    marginVertical: 10,
-    padding: 10,
-    borderWidth: 1,
-    borderColor: 'gray'
+    padding: 20,
+    marginBottom: '5%',
+    backgroundColor: 'powderblue',
   },
   titleText: {
     color: 'dodgerblue',

@@ -21,6 +21,7 @@ import SaveScreen from './SaveScreen';
 import VeganMapScreen from './VeganMapScreen';
 import { Tab } from 'react-native-elements/dist/tab/tab';
 import VeganMapListScreen from './VeganMapListScreen';
+import HowToUseScreen from './HowToUseScreen';
 
 const navOptionHandler = () => ({
   headerShown: false
@@ -185,6 +186,11 @@ function DrawerNavigation() {
               ? require('../Images/Icon/eco_house_color.png')
               : require('../Images/Icon/eco_house_color.png')
           }
+          else if (route.name === 'How To Use') {
+            iconName = focused
+              ? require('../Images/Icon/manual_color.png')
+              : require('../Images/Icon/manual_color.png')
+          }
           else if (route.name === 'Vegan Restaurant Map') {
             iconName = focused
               ? require('../Images/Icon/map_color.png')
@@ -211,6 +217,7 @@ function DrawerNavigation() {
       {/* <Drawer.Screen name='Vegan Information' component={VeganInfoScreen} /> */}
       <Drawer.Screen name='Search Product' component={SearchStack} />
       <Drawer.Screen name='Vegan Restaurant Map' component={MapTab} />
+      {/* <Drawer.Screen name='How To Use' component={HowToUseScreen} />/ */}
     </Drawer.Navigator>
   ) 
 }

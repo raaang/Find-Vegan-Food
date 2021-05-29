@@ -163,8 +163,8 @@ app.post('/check_vegan/find', function (req, res) {
   // console.log(req.body.rawmatList);
   const rawmat_name = req.body.rawmatList;
 
-  connection.query('select rawmat_name, is_vegan from check_vegan where rawmat_name=?', rawmat_name,
-    function (err, rows) {
+  connection.query('select rawmat_name, is_vegan, vegan_info from check_vegan where rawmat_name=?', 
+    rawmat_name, function (err, rows) {
       if (err)
         console.log(err);
       else {

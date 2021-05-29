@@ -224,11 +224,12 @@ const Search = ({ navigation }) => {
   const checkVegan = async (materialList, veganList) => {
     var isVegan = [];
     var findVegan;
+    var veganInfo;
 
     // there is no raw material info in DB
     if (veganList.length == 0) {
       for (i = 0; i < materialList.length; i++) {
-        isVegan.push([materialList[i], 0]);
+        isVegan.push({'name': materialList[i], 'is_vegan': findVegan, 'vegan_info': ''});
       }
     }
     // there is raw material info in DB
@@ -237,15 +238,17 @@ const Search = ({ navigation }) => {
         for (j = 0; j < veganList.length; j++) {
           if (materialList[i] == veganList[j].rawmat_name) {
             findVegan = veganList[j].is_vegan;
+            veganInfo = veganList[j].vegan_info;
             // console.log('name in veganList');
             break;
           }
           else {
             findVegan = 0;
+            veganInfo = '';
             // console.log('no name in veganList');
           }
         }
-        isVegan.push({'name': materialList[i], 'is_vegan': findVegan})
+        isVegan.push({'name': materialList[i], 'is_vegan': findVegan, 'vegan_info':veganInfo});
       }
     }
 

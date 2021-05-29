@@ -65,11 +65,17 @@ export default function MaterialScreen({ route, navigation }) {
             <Text style={styles.materialText}>{raw.name}</Text>
             {/* <Text style={styles.materialText}>{raw[1]}</Text> */}
             {raw.is_vegan ? (
-              <TouchableOpacity style={styles.veganArea}>
+              <TouchableOpacity 
+                style={styles.veganArea} 
+                onPress={() => pressVeganHandler(raw, idx)}
+              >
                 <Text style={styles.veganText}>Vegan</Text>
               </TouchableOpacity>
             ) : (
-              <TouchableOpacity style={styles.nonVeganArea}>
+              <TouchableOpacity 
+                style={styles.nonVeganArea}
+                onPress={() => pressVeganHandler(raw, idx)}
+              >
                 <Text style={styles.veganText}>Non-Vegan</Text>
               </TouchableOpacity>
             )}
@@ -78,6 +84,16 @@ export default function MaterialScreen({ route, navigation }) {
       )
     }
   )
+
+  const pressVeganHandler = (raw, idx) => {
+    if (raw.vegan_info === '') {
+      Alert.alert(raw.name);
+      console.log(raw);
+    } else {
+      Alert.alert(raw.name, raw.vegan_info);
+      console.log(raw);
+    }
+  }
   
   
   const pressTitleHandler = () => {

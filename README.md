@@ -1,1 +1,1 @@
-Barcode Scanner
+Find Vegan Food

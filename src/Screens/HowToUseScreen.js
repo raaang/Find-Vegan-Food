@@ -6,7 +6,7 @@ export default function HowToUseScreen({ navigation }) {
   return (
     <View>
       <CustomHeader title="Vegan Restaurant List" isHome={true} navigation={navigation} />
-      <Text>How To Use</Text>
+      <Text>Show How To Use</Text>
     </View>
   )
 }

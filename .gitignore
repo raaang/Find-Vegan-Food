@@ -63,5 +63,11 @@ buck-out/
 /config/database.js
 
 # google api
-/src/Screens/VeganMapScreen.js
-/src/Screens/VeganMapListScreen.js
+src/Screens/VeganMapScreen.js
+
+src/Screens/VeganMapListScreen.js
+
+# api information
+src/서울시 지정·인증업소 현황.json
+
+src/채식음식점.csv

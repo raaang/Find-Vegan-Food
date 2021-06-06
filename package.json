@@ -10,6 +10,8 @@
     "lint": "eslint ."
   },
   "dependencies": {
+    "@react-native-firebase/app": "^12.0.0",
+    "@react-native-firebase/firestore": "^12.0.0",
     "@react-native-picker/picker": "^1.16.0",
     "@react-navigation/bottom-tabs": "^5.11.10",
     "@react-navigation/drawer": "^5.12.5",

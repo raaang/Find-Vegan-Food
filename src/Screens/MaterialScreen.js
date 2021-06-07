@@ -114,7 +114,7 @@ export default function MaterialScreen({ route, navigation }) {
     await selectSaveData();
     
     console.log('----------------------------------');
-    console.log('dataLength', data.length);
+    // console.log('dataLength', data.length);
     if (data == null || data == '' || data.length == 0) {
       await insertSaveData();
       console.log('insert');

@@ -33,18 +33,17 @@ export default function SaveScreen({ navigation }) {
 
   useEffect(() => {
     const interval = setInterval(() => {
-    // MySQL
-    // fetch('http://192.168.25.6:4444/save_product')
-    //   .then((response) => response.json())
-    //   .then((responseJson) => {
-    //     setData(responseJson);
-    //   })
-    //   .catch((error) => {
-    //     console.log(error);
-    //   });
-    selectFoodData();
-
-    }, 5000)
+      // MySQL
+      // fetch('http://192.168.25.6:4444/save_product')
+      //   .then((response) => response.json())
+      //   .then((responseJson) => {
+      //     setData(responseJson);
+      //   })
+      //   .catch((error) => {
+      //     console.log(error);
+      //   });
+      selectFoodData();
+    }, 2000)
 
     return () => clearInterval(interval)
   }, []);
@@ -114,6 +113,7 @@ export default function SaveScreen({ navigation }) {
     });
   }
 
+  
   const selectFoodData = async() => {
     // firestore
     var response = await firestore().collection('save_product')
@@ -121,7 +121,7 @@ export default function SaveScreen({ navigation }) {
       .onSnapshot((doc) => {
         const foodList = [];
         doc._docs.map((data) => {
-            console.log('current data: ', data._data);
+            console.log('save: ', data._data);
             foodList.push(data._data);
           }
         )
@@ -146,8 +146,8 @@ export default function SaveScreen({ navigation }) {
     // firestore
     const productInfo = {
       barcode: item.barcode, 
-      foodNum: item.product_num, 
-      foodName: item.product_name,
+      product_num: item.product_num, 
+      product_name: item.product_name,
       date: firestore.Timestamp.now()
     }
     

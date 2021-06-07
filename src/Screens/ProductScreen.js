@@ -210,8 +210,8 @@ export default function ProductScreen({ route, navigation }) {
   const insertFood = async () => {
     const productInfo = {
       barcode: barcodeValue.data, 
-      foodNum: foodNum, 
-      foodName: foodName,
+      product_num: foodNum, 
+      product_name: foodName,
       date: firestore.Timestamp.now()
     }
     

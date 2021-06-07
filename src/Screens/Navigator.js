@@ -19,7 +19,6 @@ import Search2 from './Search2';
 import Search from './Search';
 import SaveScreen from './SaveScreen';
 import VeganMapScreen from './VeganMapScreen';
-import { Tab } from 'react-native-elements/dist/tab/tab';
 import VeganMapListScreen from './VeganMapListScreen';
 import HowToUseScreen from './HowToUseScreen';
 

@@ -11,7 +11,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import { Colors } from 'react-native/Libraries/NewAppScreen';
+import firestore from '@react-native-firebase/firestore';
 import CustomHeader from '../Components/CustomHeader';
 
 export default function MaterialScreen({ route, navigation }) {
@@ -34,9 +34,9 @@ export default function MaterialScreen({ route, navigation }) {
 
   console.log('==============================');
   console.log('Material Screen');
-  console.log(barcode, foodNum, foodName);
-  console.log('materialList ', materialList);
-  console.log('veganList ', veganList);
+  // console.log(barcode, foodNum, foodName);
+  // console.log('materialList ', materialList);
+  // console.log('veganList ', veganList);
   console.log('previousRouteName: ', routeName);
 
   function findVegan(element)  {
@@ -46,6 +46,7 @@ export default function MaterialScreen({ route, navigation }) {
   }
 
   useEffect(() => {
+    // check all raw material is vegan
     const checkVegan = veganList.find(findVegan);
     console.log(checkVegan);
     if (checkVegan) {
@@ -114,9 +115,10 @@ export default function MaterialScreen({ route, navigation }) {
     
     console.log('----------------------------------');
     console.log('dataLength', data.length);
-    if (data.length == 0) {
-      insertSaveData();
-      console.log('insert')
+    if (data == null || data == '' || data.length == 0) {
+      await insertSaveData();
+      console.log('insert');
+      await selectSaveData();
     } else {
       alert('Already Saved This Product');
       console.log('already saved this product');
@@ -124,41 +126,61 @@ export default function MaterialScreen({ route, navigation }) {
 
     setLoading(false);
     navigation.navigate('Save', {
-      saveList: data
+      // saveList: data
     });
   }
 
   const selectSaveData = async () => {
     console.log('----------------------------------');
     console.log('Select Data');
-    const response = await fetch('http://192.168.25.6:4444/save_product/find', {
-      method: 'post',
-      headers: {
-        'content-type' : 'application/json'
-      },
-      body: JSON.stringify({
-        product_num: foodNum
-      })
-    }).then((res) => res.json());
-    setData(response);
-    console.log(data);
+    // MySQL
+    // const response = await fetch('http://192.168.25.6:4444/save_product/find', {
+    //   method: 'post',
+    //   headers: {
+    //     'content-type' : 'application/json'
+    //   },
+    //   body: JSON.stringify({
+    //     product_num: foodNum
+    //   })
+    // }).then((res) => res.json());
+    // setData(response);
+    // console.log(data);
+
+    // firestore
+    const response = await firestore().collection('save_product').doc(foodNum).get();
+    console.log(response);
+    setData(response._data);
+    console.log('data ', data);
   }
 
   const insertSaveData = async () => {
     console.log('----------------------------------');
     console.log('insert Data');
-    await fetch('http://192.168.25.6:4444/save_product/insert', {
-      method: 'post',
-      headers: {
-        'content-type' : 'application/json'
-      },
-      body: JSON.stringify({
-        barcode: barcode,
-        product_num: foodNum,
-        product_name: foodName,
-        is_vegan: isVegan
-      })
-    }).then((res) => res.json());
+    // MySQL
+    // await fetch('http://192.168.25.6:4444/save_product/insert', {
+    //   method: 'post',
+    //   headers: {
+    //     'content-type' : 'application/json'
+    //   },
+    //   body: JSON.stringify({
+    //     barcode: barcode,
+    //     product_num: foodNum,
+    //     product_name: foodName,
+    //     is_vegan: isVegan
+    //   })
+    // }).then((res) => res.json());
+
+    // firestore
+    const saveProductInfo = {
+      barcode: barcode,
+      product_num: foodNum,
+      product_name: foodName,
+      is_vegan: isVegan,
+      save_date: firestore.Timestamp.now()
+    }
+
+    const response = await firestore().collection('save_product').doc(barcode).set(saveProductInfo);
+    console.log(response);
   }
   
   // loading animation

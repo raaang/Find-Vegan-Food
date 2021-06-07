@@ -1,5 +1,16 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Animated, Button, Easing, FlatList, SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import {
+  Animated,
+  Button,
+  Easing,
+  FlatList,
+  SafeAreaView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
+import firestore from '@react-native-firebase/firestore';
 import CustomHeader from '../Components/CustomHeader';
 
 export default function ProductScreen({ route, navigation }) {
@@ -139,16 +150,20 @@ export default function ProductScreen({ route, navigation }) {
     console.log(foodName);
     console.log(materialList);
 
-    selectFoodData();
-    console.log('dataLength', data.length);
-    if (data.length == 0) {
-      insertFoodData();
-    } else {
-      updateFoodData();
-    }
+    await selectFoodData();
+    // MySQL
+    // console.log('dataLength', data.length);
+    // if (data.length == 0) {
+    //   insertFoodData();
+    // } else {
+    //   updateFoodData();
+    // }
+    await insertFood();
 
     const veganList = await getVeganList(materialList);
+    console.log(veganList.length);
     const findVegan = await checkVegan(materialList, veganList);
+    console.log(findVegan.length);
     console.log('------------------------------');
     console.log('final');
 
@@ -173,21 +188,42 @@ export default function ProductScreen({ route, navigation }) {
 
   const selectFoodData = async () => {
     console.log('select Data');
-    const response = await fetch('http://192.168.25.6:4444/product/find', {
-      method: 'post',
-      headers: {
-        'content-type' : 'application/json'
-      },
-      body: JSON.stringify({
-        barcode: barcodeValue.data
-      })
-    }).then((res) => res.json());
-    setData(response);
+    // MySQL
+    // const response = await fetch('http://192.168.25.6:4444/product/find', {
+    //   method: 'post',
+    //   headers: {
+    //     'content-type' : 'application/json'
+    //   },
+    //   body: JSON.stringify({
+    //     barcode: barcodeValue.data
+    //   })
+    // }).then((res) => res.json());
+    // setData(response);
+    
+    // firestore
+    var response = await firestore().collection('product').where('barcode', '==', barcodeValue.data).get();
+    console.log(response._docs[0]);
+    // response = response._docs[0];
   }
+
+  // firestore
+  const insertFood = async () => {
+    const productInfo = {
+      barcode: barcodeValue.data, 
+      foodNum: foodNum, 
+      foodName: foodName,
+      date: firestore.Timestamp.now()
+    }
+    
+    const response = await firestore().collection('product').doc(productInfo.barcode).set(productInfo);
+    console.log('insert ', response);
+  }
+
 
   // insert query by server
   const insertFoodData = async () => {
     console.log('insert Data');
+    // MySQL
     await fetch('http://192.168.25.6:4444/product/insert', {
       method: 'post',
       headers: {
@@ -201,7 +237,10 @@ export default function ProductScreen({ route, navigation }) {
     }).then((res) => res.json());
   }
 
+  // update query by server
   const updateFoodData = async () => {
+    console.log('update Data');
+    // MySQL
     await fetch('http://192.168.25.6:4444/product/update', {
       method: 'post',
       headers: {
@@ -215,12 +254,11 @@ export default function ProductScreen({ route, navigation }) {
     }).then((res) => res.json());
   }
 
-  
   // select query by server
   const getVeganList = async (materialList) => {
     console.log('------------------------------');
     console.log('getVeganList');
-    console.log('material ',materialList);
+    console.log('material ', materialList);
 
     console.log('------------------------------');
     vegan = [];
@@ -229,22 +267,38 @@ export default function ProductScreen({ route, navigation }) {
     for (i = 0; i < materialList.length; i++) {
       console.log('------------------------------');
       try {
-        const response = await fetch('http://192.168.25.6:4444/check_vegan/find', {
-          method: 'post',
-          headers: {
-            'content-type': 'application/json'
-          },
-          body: JSON.stringify({
-            rawmatList: materialList[i]
-          })
-        }).then((res) => res.json());
-        vegan.push(response);
+        // MySQL
+        // const response = await fetch('http://192.168.25.6:4444/check_vegan/find', {
+        //   method: 'post',
+        //   headers: {
+        //     'content-type': 'application/json'
+        //   },
+        //   body: JSON.stringify({
+        //     rawmatList: materialList[i]
+        //   })
+        // }).then((res) => res.json());
+        // vegan.push(response);
+
+        // firestore
+        // var response = await firestore().collection('check_vegan').doc(materialList[3]).get();
+        // console.log(response._data);
+        var response = await firestore().collection('check_vegan').where('rawmat_name', '==', materialList[i]).get();
+        response = response._docs[0];
+
+        if (response == '' || response == null)
+          console.log('there is no data');
+        else {
+          console.log(response._data);
+          vegan.push(response._data);
+        }
+        
       } catch (err) {
         console.log(err);
       }
     }
     
     console.log(vegan);
+    console.log(vegan.length);
     return vegan;
   }
   

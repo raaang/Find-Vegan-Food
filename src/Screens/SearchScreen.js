@@ -1,11 +1,17 @@
 // Searching using Search Bar Filter in React Native List View
 // https://aboutreact.com/react-native-search-bar-filter-on-listview/
 
-// import React in our code
 import React, { useState, useEffect } from 'react';
-
-// import all the components we are going to use
-import { SafeAreaView, Text, StyleSheet, View, FlatList, TouchableOpacity, Animated, Easing } from 'react-native';
+import {
+  SafeAreaView,
+  Text,
+  StyleSheet,
+  View,
+  FlatList,
+  TouchableOpacity,
+  Animated,
+  Easing,
+} from 'react-native';
 import { SearchBar } from 'react-native-elements';
 import IonIcon from 'react-native-vector-icons/Ionicons';
 import CustomHeader from '../Components/CustomHeader';
@@ -275,41 +281,41 @@ const Search = ({ navigation }) => {
   return (
     <SafeAreaView style={{ flex: 1 }}>
 
-        {loading ? (
-          <View style={styles.loadingArea}>
-            <Animated.Image
-              source={require('../Images/Icon/loader_120px.png')}
-              style={{
-                alignItems: 'center',
-                justifyContent: 'center',
-                width: 50,
-                height: 50,
-                transform: [{ rotate: rotation }]
-              }}
-            />
-          </View>
-        ) : (
-          <View style={styles.container}>
-            <CustomHeader title='' isHome={false} isSearch={true} navigation={navigation} />
-            <SearchBar
-              round
-              lightTheme
-              containerStyle={{ justifyContent: 'center' }}
-              // inputStyle={{height: 30}}
-              searchIcon={{ size: 24 }}
-              onChangeText={(text) => searchFilterFunction(text)}
-              onClear={(text) => searchFilterFunction('')}
-              placeholder="Search Product Name"
-              value={search}
-            />
-            <FlatList
-              data={filteredDataSource}
-              keyExtractor={(item, index) => index.toString()}
-              ItemSeparatorComponent={getItemSeparator}
-              renderItem={getItem}
-            />
-          </View>
-        )}
+      {loading ? (
+        <View style={styles.loadingArea}>
+          <Animated.Image
+            source={require('../Images/Icon/loader_120px.png')}
+            style={{
+              alignItems: 'center',
+              justifyContent: 'center',
+              width: 50,
+              height: 50,
+              transform: [{ rotate: rotation }]
+            }}
+          />
+        </View>
+      ) : (
+        <View style={styles.container}>
+          <CustomHeader title='' isHome={false} isSearch={true} navigation={navigation} />
+          <SearchBar
+            round
+            lightTheme
+            containerStyle={{ justifyContent: 'center' }}
+            // inputStyle={{height: 30}}
+            searchIcon={{ size: 24 }}
+            onChangeText={(text) => searchFilterFunction(text)}
+            onClear={(text) => searchFilterFunction('')}
+            placeholder="Search Product Name"
+            value={search}
+          />
+          <FlatList
+            data={filteredDataSource}
+            keyExtractor={(item, index) => index.toString()}
+            ItemSeparatorComponent={getItemSeparator}
+            renderItem={getItem}
+          />
+        </View>
+      )}
     </SafeAreaView>
   );
 };

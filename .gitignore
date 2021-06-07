@@ -71,3 +71,6 @@ src/Screens/VeganMapListScreen.js
 src/서울시 지정·인증업소 현황.json
 
 src/채식음식점.csv
+
+#firebase
+android/app/google-services.json

@@ -5,7 +5,7 @@ import firestore from '@react-native-firebase/firestore';
 import CustomHeader from '../Components/CustomHeader';
 
 export default function SaveScreen({ navigation }) {
-  const apiKey = '85e2be4bc56846348d50';
+  const apiKey = REACT_APP_API_KEY;
 
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState([]);
